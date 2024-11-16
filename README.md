@@ -1,6 +1,10 @@
 # ShowUI
 [![demo](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-blue)](https://huggingface.co/showlab/ShowUI-2B)&nbsp;
 
+### 📢 News
+<!--  -->
+- [2024.11.16] Upload the `showlab/ShowUI-2B` at huggingface.
+
 ## ⭐ Quick Start
 
 1. Load model
