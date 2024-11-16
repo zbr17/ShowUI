@@ -3,7 +3,7 @@
 
 ### 📢 News
 <!--  -->
-- [2024.11.16] Upload the `showlab/ShowUI-2B` at huggingface.
+- [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
 
 ## ⭐ Quick Start
 
