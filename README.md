@@ -41,7 +41,7 @@ processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct", min_pixel
 
 2. **UI Grounding**
 ```python
-img_url = 'web_dbd7514b-9ca3-40cd-b09a-990f7b955da1.png'
+img_url = 'examples/web_dbd7514b-9ca3-40cd-b09a-990f7b955da1.png'
 query = "Nahant"
 
 
@@ -138,7 +138,7 @@ What is the next action?
 ```
 
 ```python
-img_url = 'chrome.png'
+img_url = 'examples/chrome.png'
 split='web'
 system_prompt = _NAV_SYSTEM.format(_APP=split, _ACTION_SPACE=action_map[split])
 query = "Search the weather for the New York city."
