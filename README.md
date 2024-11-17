@@ -5,6 +5,10 @@
 <!--  -->
 - [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
 
+### 📝 Todo
+- [ ] Release arXiv paper.
+- [ ] Support [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for easy usage.
+
 ## ⭐ Quick Start
 
 1. Load model
