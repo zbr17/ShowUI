@@ -1,4 +1,3 @@
-<img src="examples/logo.png" alt="ShowUI" width="600">
 
 
 [![demo](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-blue)](https://huggingface.co/showlab/ShowUI-2B)&nbsp;
