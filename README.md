@@ -11,6 +11,7 @@ ShowUI is a lightweight vision-language-action model designed for GUI agents.
 
 ### 📝 Todo
 - [ ] Support Gradio Demo.
+- [ ] Release ShowUI-PC UI grounding data.
 - [ ] Support [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for easy usage.
 
 ## ⭐ Quick Start
