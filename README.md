@@ -4,9 +4,10 @@
 ### 📢 News
 <!--  -->
 - [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
+- [2024.11.27] We release arXiv paper.
 
 ### 📝 Todo
-- [ ] Release arXiv paper.
+- [ ] Support Gradio Demo.
 - [ ] Support [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for easy usage.
 
 ## ⭐ Quick Start
