@@ -17,7 +17,7 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 
 ### 📝 Todo
 - [ ] Support [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run.
-- [ ] Support UI-Graph Efficient Inference.
+- [ ] Support UI-Graph Token selection for Efficient Inference.
 
 
 ## ⭐ Quick Start
