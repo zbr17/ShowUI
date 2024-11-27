@@ -23,7 +23,7 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 ## ⭐ Quick Start
 
 ### 1. Prerequisites
-- Instal Miniconda on your system through this [link](https://www.anaconda.com/download?utm_source=anacondadocs&utm_medium=documentation&utm_campaign=download&utm_content=topnavalldocs). (**Python Version: >= 3.11**).
+- Install miniconda on your system through this [link](https://www.anaconda.com/download?utm_source=anacondadocs&utm_medium=documentation&utm_campaign=download&utm_content=topnavalldocs). (**Python Version: >= 3.11**).
 
 #### 1.1. Clone the Repository 📂
 Open the Conda Terminal. (After installation Of Miniconda, it will appear in the Start menu.)
