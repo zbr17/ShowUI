@@ -244,6 +244,6 @@ Welcome to discuss with us and continuously improve the user experience of Compu
 
 <div style="display: flex; flex-direction: row; justify-content: space-around;">
 
-<img src="assets/wechat_groupchat.jpg" alt="gradio_interface" style="width:30%;">
+<img src="assets/wechat.jpg" alt="gradio_interface" style="width:30%;">
 
 </div>
