@@ -10,9 +10,9 @@ ShowUI is a lightweight (2B) vision-language-action model designed for GUI agent
 <!--  -->
 - [x] [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
 - [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465).
+- [x] [2024.11.27] Support Gradio Demo.
 
 ### 📝 Todo
-- [ ] Support Gradio Demo.
 - [ ] Support [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for easy usage and local run.
 - [ ] Release ShowUI-PC UI grounding data.
 - [ ] Support UI-Graph Efficient Inference.
