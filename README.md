@@ -212,3 +212,11 @@ If you find our work helpful, please consider citing our paper.
 }
 ```
 
+## Join Discussion
+Welcome to discuss with us and continuously improve the user experience of Computer Use - OOTB. Reach us using this [**Discord Channel**](https://discord.gg/HnHng5de) or the WeChat QR code below!
+
+<div style="display: flex; flex-direction: row; justify-content: space-around;">
+
+<img src="assets/wechat_groupchat_2.jpg" alt="gradio_interface" style="width:30%;">
+
+</div>
