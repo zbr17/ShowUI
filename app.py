@@ -11,6 +11,7 @@ import ast
 import os
 from datetime import datetime
 import numpy as np
+from huggingface_hub import hf_hub_download, list_repo_files
 
 # Define constants
 DESCRIPTION = "[ShowUI Demo](https://huggingface.co/showlab/ShowUI-2B)"
@@ -18,11 +19,26 @@ _SYSTEM = "Based on the screenshot of the page, I give a text description and yo
 MIN_PIXELS = 256 * 28 * 28
 MAX_PIXELS = 1344 * 28 * 28
 
-# Load the model
+# Specify the model repository and destination folder
+model_repo = "showlab/ShowUI-2B"
+destination_folder = "./showui-2b"
+
+# Ensure the destination folder exists
+os.makedirs(destination_folder, exist_ok=True)
+
+# List all files in the repository
+files = list_repo_files(repo_id=model_repo)
+
+# Download each file to the destination folder
+for file in files:
+    file_path = hf_hub_download(repo_id=model_repo, filename=file, local_dir=destination_folder)
+    print(f"Downloaded {file} to {file_path}")
+
 model = Qwen2VLForConditionalGeneration.from_pretrained(
     "./showui-2b",
+    # "showlab/ShowUI-2B",
     torch_dtype=torch.bfloat16,
-    device_map="auto",
+    device_map="cpu",
 )
 
 # Load the processor
@@ -68,6 +84,11 @@ def run_showui(image, query):
     ]
 
     # Prepare inputs for the model
+
+    global model
+
+    model = model.to("cuda")
+    
     text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     image_inputs, video_inputs = process_vision_info(messages)
     inputs = processor(
@@ -128,20 +149,28 @@ def build_demo(embed_mode, concurrency_count=1):
         state_image_path = gr.State(value=None)
 
         if not embed_mode:
-            # Replace the original description with new content
             gr.HTML(
                 f"""
-                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                    <!-- Logo on the left -->
-                    <a href="https://github.com/showlab/ShowUI" target="_blank" style="margin-right: 20px;">
-                        <img src="data:image/png;base64,{base64_image}" alt="ShowUI Logo" style="width: auto; height: 66px;"/>
-                    </a>
-                    <!-- Links on the right -->
-                    <div style="display: flex; gap: 15px; font-size: 20px;">
-                        <a href="https://github.com/showlab/ShowUI" target="_blank">🏠[Project Homepage]</a>
-                        <a href="https://github.com/showlab/ShowUI" target="_blank">🤖[Code]</a>
-                        <a href="https://huggingface.co/showlab/ShowUI-2B" target="_blank">😊[Models]</a>
-                        <a href="https://arxiv.org/" target="_blank">📚[Paper]</a>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <!-- Image -->
+                    <div style="display: flex; justify-content: center;">
+                        <img src="data:image/png;base64,{base64_image}" alt="ShowUI" width="320" style="margin-bottom: 10px;"/>
+                    </div>
+            
+                    <!-- Description -->
+                    <p>ShowUI is a lightweight vision-language-action model for GUI agents.</p>
+            
+                    <!-- Links -->
+                    <div style="display: flex; justify-content: center; gap: 15px; font-size: 20px;">
+                        <a href="https://huggingface.co/showlab/ShowUI-2B" target="_blank">
+                            <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ShowUI--2B-blue" alt="model"/>
+                        </a>
+                        <a href="https://arxiv.org/abs/2411.17465" target="_blank">
+                            <img src="https://img.shields.io/badge/arXiv%20paper-2411.17465-b31b1b.svg" alt="arXiv"/>
+                        </a>
+                        <a href="https://github.com/showlab/ShowUI" target="_blank">
+                            <img src="https://img.shields.io/badge/GitHub-ShowUI-black" alt="GitHub"/>
+                        </a>
                     </div>
                 </div>
                 """
@@ -161,16 +190,29 @@ def build_demo(embed_mode, concurrency_count=1):
                 # Placeholder examples
                 gr.Examples(
                     examples=[
+                        ["./examples/app_store.png", "Download Kindle."],
+                        ["./examples/ios_setting.png", "Turn off Do not disturb."],
+                        ["./examples/apple_music.png", "Star to favorite."],
+                        ["./examples/map.png", "Boston."],
+                        ["./examples/wallet.png", "Scan a QR code."],
+                        ["./examples/word.png", "More shapes."],
+                        ["./examples/web_shopping.png", "Proceed to checkout."],
+                        ["./examples/web_forum.png", "Post my comment."],
                         ["./examples/safari_google.png", "Click on search bar."],
-                        ["./examples/apple_music.png", "Click on star."],
                     ],
                     inputs=[imagebox, textbox],
-                    examples_per_page=2
+                    examples_per_page=3
                 )
 
             with gr.Column(scale=8):
                 # Output components
                 output_img = gr.Image(type="pil", label="Output Image")
+                # Add a note below the image to explain the red point
+                gr.HTML(
+                    """
+                    <p><strong>Note:</strong> The <span style="color: red;">red point</span> on the output image represents the predicted clickable coordinates.</p>
+                    """
+                )
                 output_coords = gr.Textbox(label="Clickable Coordinates")
 
                 # Buttons for voting, flagging, regenerating, and clearing
@@ -245,5 +287,6 @@ if __name__ == "__main__":
     demo.queue(api_open=False).launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=True
+        ssr_mode=False,
+        debug=True,
     )

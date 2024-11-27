@@ -20,3 +20,4 @@ git+https://github.com/huggingface/transformers@21fac7abba2a37fae86106f87fcf9974
 qwen-vl-utils
 scikit-learn
 nltk
+transformers
