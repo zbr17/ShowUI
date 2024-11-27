@@ -25,7 +25,7 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 ### 0. Prerequisites
 - Instal Miniconda on your system through this [link](https://www.anaconda.com/download?utm_source=anacondadocs&utm_medium=documentation&utm_campaign=download&utm_content=topnavalldocs). (**Python Version: >= 3.11**).
 
-### 1. Clone the Repository 📂
+#### 1. Clone the Repository 📂
 Open the Conda Terminal. (After installation Of Miniconda, it will appear in the Start menu.)
 Run the following command on **Conda Terminal**.
 ```bash
@@ -33,12 +33,12 @@ git clone https://github.com/showlab/computer_use_ootb.git
 cd computer_use_ootb
 ```
 
-### 2. Install Dependencies 🔧
+#### 2. Install Dependencies 🔧
 ```bash
 pip install -r dev-requirements.txt
 ```
 
-### 3. Start the Interface ▶️
+#### 3. Start the Interface ▶️
 ```bash
 python app.py
 ```
@@ -48,7 +48,7 @@ If you successfully start the interface, you will see two URLs in the terminal:
 * Running on public URL: https://xxxxxxxxxxxxxxxx.gradio.live (Do not share this link with others, or they will be able to control your computer.)
 ```
 
-1. Load model
+### 1. Load model
 ```python
 import ast
 import torch
@@ -80,7 +80,7 @@ max_pixels = 1344*28*28
 processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct", min_pixels=min_pixels, max_pixels=max_pixels)
 ```
 
-2. **UI Grounding**
+### 2. **UI Grounding**
 ```python
 img_url = 'examples/web_dbd7514b-9ca3-40cd-b09a-990f7b955da1.png'
 query = "Nahant"
@@ -129,7 +129,7 @@ This will visualize the grounding results like (where the red points are [x,y])
 
 ![download](https://github.com/user-attachments/assets/8fe2783d-05b6-44e6-a26c-8718d02b56cb)
 
-3. **UI Navigation**
+### 3. **UI Navigation**
 - Set up system prompt.
 ```python
 _NAV_SYSTEM = """You are an assistant trained to navigate the {_APP} screen. 
