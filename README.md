@@ -1,4 +1,4 @@
-<img src="examples/showui.png" alt="ShowUI" width="480">
+<img src="examples/showui.png" alt="ShowUI" width="640">
 
 ShowUI is a lightweight vision-language-action model for GUI agents.
 
