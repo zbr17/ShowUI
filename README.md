@@ -2,7 +2,7 @@
 
 ShowUI is a lightweight (2B) vision-language-action model designed for GUI agents.
 
-<div align="center">
+<div align="left">
 
 [![model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-blue)](https://huggingface.co/showlab/ShowUI-2B)&nbsp;
 [![arXiv](https://img.shields.io/badge/arXiv%20paper-2411.17465-b31b1b.svg)](https://arxiv.org/abs/2411.17465)&nbsp;
