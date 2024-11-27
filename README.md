@@ -6,6 +6,7 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 [![arXiv](https://img.shields.io/badge/arXiv%20paper-2411.17465-b31b1b.svg)](https://arxiv.org/abs/2411.17465)&nbsp;
 [![demo](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm-dark.svg)](https://huggingface.co/spaces/showlab/ShowUI)&nbsp;
 [![dataset](https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-sm.svg)](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K)
+[![x](https://img.shields.io/badge/X-%23000000.svg?logo=X&logoColor=white)](https://x.com/KevinQHLin/status/1861664707654099114)
 
 ### 📢 News
 <!--  -->
