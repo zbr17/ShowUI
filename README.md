@@ -22,6 +22,32 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 
 ## ⭐ Quick Start
 
+### 0. Prerequisites
+- Instal Miniconda on your system through this [link](https://www.anaconda.com/download?utm_source=anacondadocs&utm_medium=documentation&utm_campaign=download&utm_content=topnavalldocs). (**Python Version: >= 3.11**).
+
+### 1. Clone the Repository 📂
+Open the Conda Terminal. (After installation Of Miniconda, it will appear in the Start menu.)
+Run the following command on **Conda Terminal**.
+```bash
+git clone https://github.com/showlab/computer_use_ootb.git
+cd computer_use_ootb
+```
+
+### 2. Install Dependencies 🔧
+```bash
+pip install -r dev-requirements.txt
+```
+
+### 3. Start the Interface ▶️
+```bash
+python app.py
+```
+If you successfully start the interface, you will see two URLs in the terminal:
+```bash
+* Running on local URL:  http://127.0.0.1:7860
+* Running on public URL: https://xxxxxxxxxxxxxxxx.gradio.live (Do not share this link with others, or they will be able to control your computer.)
+```
+
 1. Load model
 ```python
 import ast
