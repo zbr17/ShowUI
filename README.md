@@ -197,3 +197,18 @@ print(output_text)
 
 ![download](https://github.com/user-attachments/assets/624097ea-06f2-4c8f-83f6-b6b9ee439c0c)
 
+
+If you find our work helpful, please consider citing our paper.
+
+```
+@misc{lin2024showui,
+      title={ShowUI: One Vision-Language-Action Model for GUI Visual Agent}, 
+      author={Kevin Qinghong Lin and Linjie Li and Difei Gao and Zhengyuan Yang and Shiwei Wu and Zechen Bai and Weixian Lei and Lijuan Wang and Mike Zheng Shou},
+      year={2024},
+      eprint={2411.17465},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2411.17465}, 
+}
+```
+
