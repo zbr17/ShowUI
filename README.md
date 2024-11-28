@@ -6,7 +6,8 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 [![arXiv](https://img.shields.io/badge/arXiv%20paper-2411.17465-b31b1b.svg)](https://arxiv.org/abs/2411.17465)&nbsp;
 [![demo](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm-dark.svg)](https://huggingface.co/spaces/showlab/ShowUI)&nbsp;
 [![dataset](https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-sm.svg)](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K)
-[![x](https://img.shields.io/badge/X-%23000000.svg?logo=X&logoColor=white)](https://x.com/KevinQHLin/status/1861664707654099114)
+[![X (formerly Twitter) URL](https://img.shields.io/twitter/url?url=https%3A%2F%2Fx.com%2FKevin_GuoweiXu%2Fstatus%2F1858338565463421244)](https://x.com/KevinQHLin/status/1861664707654099114)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fshowlab%2FShowUI&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 **If you like our project, please give us a star ⭐ for the latest update.**
 
