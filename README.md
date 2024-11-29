@@ -172,13 +172,6 @@ action_map = {
 5. `ENTER`: Enter operation, value and position are not applicable.
 """
 }
-
-_NAV_USER = """{system}
-Task: {task}
-Observation: <|image_1|>
-Action History: {action_history}
-What is the next action?
-"""
 ```
 
 ```python
@@ -192,8 +185,9 @@ messages = [
         "role": "user",
         "content": [
             {"type": "text", "text": system_prompt},
+            {"type": "text", "text": f'Task: {query}'},
+            # {"type": "text", "text": PAST_ACTION},
             {"type": "image", "image": img_url, "min_pixels": min_pixels, "max_pixels": max_pixels},
-            {"type": "text", "text": query}
         ],
     }
 ]
