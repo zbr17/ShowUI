@@ -14,9 +14,8 @@ ShowUI is a lightweight vision-language-action model for GUI agents.
 ### 📢 News
 <!--  -->
 - [x] [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
-- [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465).
-- [x] [2024.11.27] We release [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and support local run.
-- [x] [2024.11.27] We release `ShowUI-desktop-8K` UI grounding data at [HF datasets](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
+- [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop-8K`](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
+- [x] [2024.12.1] We support iterative refinement to improve grounding accuracy. Try it at [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI).
 
 ### 📝 Todo
 - [ ] Support [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run.
