@@ -51,6 +51,9 @@ If you successfully start the interface, you will see two URLs in the terminal:
 ```
 
 ### 2. Load model
+
+**Note for macOS users:** Please set your torch device to "mps". 
+
 ```python
 import ast
 import torch
