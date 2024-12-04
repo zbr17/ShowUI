@@ -52,7 +52,7 @@ If you successfully start the interface, you will see two URLs in the terminal:
 
 ### 2. Load model
 
-🔨 <a name="macOS"></a>**Note for macOS users:** Please set your torch device to "mps". 
+🔨 <a name="macOS"></a>**Note for macOS users:** Please set the torch device to "mps" if you are using an Apple Silicon Mac. 
 
 ```python
 import ast
