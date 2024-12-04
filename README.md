@@ -50,7 +50,7 @@ If you successfully start the interface, you will see two URLs in the terminal:
 * Running on public URL: https://xxxxxxxxxxxxxxxx.gradio.live (Do not share this link with others, or they will be able to control your computer.)
 ```
 
-### 2. <a name="Usage"></a>Load model
+### 2. <a name="usage"></a>Load model
 
 🔨 <a name="macOS"></a>**Note for macOS users:** Please set the torch device to "mps" if you are using an Apple Silicon Mac. 
 
