@@ -8,7 +8,6 @@ peft
 pillow
 jupyterlab
 opencv-python
-ultralytics
 tensorboard
 pycocotools
 scikit-image
