@@ -2,7 +2,7 @@
 
 ShowUI is a lightweight vision-language-action model for GUI agents. 
 
-You can easily run ShowUI on [Windows](#usage) and [macOS](#macOS)!
+You can easily run this model on Windows and macOS using [OOTB](https://github.com/showlab/computer_use_ootb)!
 
 [![model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-ShowUI--2B-blue)](https://huggingface.co/showlab/ShowUI-2B)&nbsp;
 [![arXiv](https://img.shields.io/badge/arXiv%20paper-2411.17465-b31b1b.svg)](https://arxiv.org/abs/2411.17465)&nbsp;
