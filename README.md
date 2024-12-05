@@ -15,10 +15,10 @@ You can easily run this model on Windows and macOS using [OOTB](https://github.c
 
 ### 📢 News
 <!--  -->
-- [x] [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
-- [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop-8K`](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
-- [x] [2024.12.1] We support iterative refinement to improve grounding accuracy. Try it at [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI).
 - [x] **[2024.12.5] Major Update:** ShowUI is integrated into [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run!
+- [x] [2024.12.1] We support iterative refinement to improve grounding accuracy. Try it at [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI).
+- [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop-8K`](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
+- [x] [2024.11.16] `showlab/ShowUI-2B` is available at huggingface.
 
 ### 📝 Todo
 - [ ] Support UI-Graph Token selection for Efficient Inference.
