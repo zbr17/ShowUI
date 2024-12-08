@@ -23,6 +23,7 @@ You can easily run this model on Windows and macOS using [OOTB](https://github.c
 ### 📝 Todo
 - [ ] Support UI-Graph Token selection for Efficient Inference.
 - [ ] Release fine-tuned code and instructions.
+- [ ] Support int8 Quantization.
 
 ## ⭐ Quick Start
 
