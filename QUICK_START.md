@@ -46,7 +46,7 @@ nf4_config = BitsAndBytesConfig(
 model = Qwen2VLForConditionalGeneration.from_pretrained(
     "showlab/ShowUI-2B",
     torch_dtype=torch.float16,
-    device_map="auto"
+    device_map="auto",
     quantization_config=nf4_config
 )
 ```
