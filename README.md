@@ -17,6 +17,7 @@
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
+- [] [2024.12.15] ShowUI will have an oral presentation at [NeurIPS2024 Open-World Agents workshop](https://sites.google.com/view/open-world-agents/schedule).
 - [x] [2024.12.9] Support int8 Quantization.
 - [x] **[2024.12.5] Major Update: ShowUI is integrated into [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run!**
 - [x] [2024.12.1] We support iterative refinement to improve grounding accuracy. Try it at [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI).
