@@ -1,6 +1,6 @@
 qwen-vl-utils>=0.0.8
 torchvision
-transformers>=4.46.3
+transformers>=4.47.0
 accelerate>=1.1.1
 huggingface_hub
 spaces
