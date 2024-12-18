@@ -17,6 +17,7 @@
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
+- [x] [2024.12.18] Upload the UI-Graph preprocessing and visualization code.
 - [x] [2024.12.15] ShowUI received **Outstanding Paper Award** at [NeurIPS2024 Open-World Agents workshop](https://sites.google.com/view/open-world-agents/schedule).
 - [x] [2024.12.9] Support int8 Quantization.
 - [x] **[2024.12.5] Major Update: ShowUI is integrated into [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run!**
