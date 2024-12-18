@@ -10,10 +10,11 @@ max_pixels = 1344*28*28
 
 processor = ShowUIProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct", min_pixels=min_pixels, max_pixels=max_pixels)
 
+# The dir to load images for ui_graph preprocessing
 img_dir = 'images'
 img_list = os.listdir(img_dir)
 
-# save the images with ui_graph visualization
+# The dir to save images with ui_graph visualization
 vis_dir = 'display'
 
 for img_url in img_list:
