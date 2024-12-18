@@ -4,8 +4,8 @@ import re
 import time
 
 from qwen_vl_utils import process_vision_info
-from model.showui.processing_showui import ShowUIProcessor
-from model.showui.modeling_showui import ShowUIForConditionalGeneration
+from showui.processing_showui import ShowUIProcessor
+from showui.modeling_showui import ShowUIForConditionalGeneration
 
 min_pixels = 256*28*28
 max_pixels = 1344*28*28
