@@ -594,8 +594,6 @@ class ShowUIImageProcessor(BaseImageProcessor):
                     img_size = f'{image_resize[0][0]}x{image_resize[0][1]}'
                     image_vis.save(f'{ui_graph_vis_dir}/{img_size}_{pre_num}_{post_num}.png')
                     
-                pixel_values.extend(patches)
-                vision_grid_thws.append(image_grid_thw)
             pixel_values = np.array(pixel_values)
             vision_grid_thws = np.array(vision_grid_thws)
             patch_assign_shared = np.array(patch_assign_shared)
