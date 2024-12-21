@@ -4,10 +4,14 @@
 <p>
 
 <p align="center">
-        🤗 <a href="https://huggingface.co/showlab/ShowUI-2B">Hugging Models</a>&nbsp&nbsp | &nbsp&nbsp 📑 <a href="https://arxiv.org/abs/2411.17465">Paper</a> &nbsp&nbsp | &nbsp&nbsp 🤗 <a href="https://huggingface.co/spaces/showlab/ShowUI">Spaces Demo</a> &nbsp&nbsp
+        🤗 <a href="https://huggingface.co/showlab/ShowUI-2B">Hugging Models</a>&nbsp&nbsp 
+        | &nbsp&nbsp 📑 <a href="https://arxiv.org/abs/2411.17465">Paper</a> &nbsp&nbsp 
+        | &nbsp&nbsp 🤗 <a href="https://huggingface.co/spaces/showlab/ShowUI">Spaces Demo</a> &nbsp&nbsp 
+        | &nbsp&nbsp 🕹️ <a href="https://openbayes.com/console/public/tutorials/I8euxlahBAm">OpenBayes贝式计算</a> &nbsp&nbsp </a> 
 <br>
 🤗 <a href="https://huggingface.co/datasets/showlab/ShowUI-desktop-8K">Datasets</a>&nbsp&nbsp | &nbsp&nbsp💬 <a href="https://x.com/_akhaliq/status/1864387028856537400">X (Twitter)</a>&nbsp&nbsp
-| &nbsp&nbsp 🖥️ <a href="https://github.com/showlab/computer_use_ootb">Computer Use</a> &nbsp&nbsp </a> |  &nbsp&nbsp 📖 <a href="https://github.com/showlab/Awesome-GUI-Agent">GUI Paper List</a> &nbsp&nbsp </a>
+| &nbsp&nbsp 🖥️ <a href="https://github.com/showlab/computer_use_ootb">Computer Use</a> &nbsp&nbsp </a> 
+|  &nbsp&nbsp 📖 <a href="https://github.com/showlab/Awesome-GUI-Agent">GUI Paper List</a> &nbsp&nbsp </a>
 </p>
 
 <!-- [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fshowlab%2FShowUI&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) -->
