@@ -34,6 +34,16 @@ See [Computer Use OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-
 
 https://github.com/user-attachments/assets/f50b7611-2350-4712-af9e-3d31e30020ee
 
+## 🚀 Training
+Our codebase supports:
+- [x] DeepSpeed Zero1, Zero2, Zero3
+- [x] Full-tuning, LoRA, QLoRA
+- [x] SDPA, Flash Attention 2
+- [x] Multiple datasets mixed training
+- [x] Interleaved data formulation
+
+See [Train](train.md) for training set up.
+
 ## 🕹️ UI-Guided Token Selection
 Try `test.ipynb`, which seamless support for Qwen2VL models.
 
