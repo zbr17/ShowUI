@@ -191,10 +191,9 @@ class ShowUIProcessor(ProcessorMixin):
             # assume here is 1 x L
             if text_inputs['input_ids'][0, i] == 151652:   # <|vision_start|> in Qwen2VL vocabulary
                 cur_img_len = image_inputs['image_grid_thw'][cur_img_idx].prod() // merge_length
-                text_inputs['patch_pos'][0, i+1: i+1+cur_img_len] = image_inputs['patch_assign_shared'][pre_start: pre_start+cur_img_len]
+                text_inputs['patch_pos'][0, i+1: i+1+cur_img_len] = image_inputs['patch_assign'][pre_start: pre_start+cur_img_len]
                 cur_img_idx += 1
                 pre_start += cur_img_len
-
         return BatchFeature(data={**text_inputs, **image_inputs, **videos_inputs})
 
     def batch_decode(self, *args, **kwargs):

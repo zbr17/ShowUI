@@ -147,7 +147,7 @@ def smart_resize(
 
 class ShowUIImageProcessor(BaseImageProcessor):
     r"""
-    Constructs a Qwen2-VL image processor that dynamically resizes images based on the original images.
+    Constructs a ShowUI image processor that inherited from Qwen2-VL, enable UI-guided visual token selection.
 
     Args:
         do_resize (`bool`, *optional*, defaults to `True`):
@@ -589,19 +589,21 @@ class ShowUIImageProcessor(BaseImageProcessor):
 
                 if ui_graph_vis_dir is not None:
                     image_vis = self._vis_ui_graph(ui_graph_assign, image_resize, self.patch_size*self.merge_size, image)
-                    pre_num = np.prod(ui_graph_assign.shape).item()
-                    post_num = len(np.unique(ui_graph_assign))
-                    img_size = f'{image_resize[0][0]}x{image_resize[0][1]}'
-                    image_vis.save(f'{ui_graph_vis_dir}/{img_size}_{pre_num}_{post_num}.png')
+                    # pre_num = np.prod(ui_graph_assign.shape).item()
+                    # post_num = len(np.unique(ui_graph_assign))
+                    # img_size = f'{image_resize[0][0]}x{image_resize[0][1]}'
+                    # image_vis.save(f'{ui_graph_vis_dir}/{img_size}_{pre_num}_{post_num}.png')
+                    image_vis.save(f'{ui_graph_vis_dir}/demo.png')
                     
             pixel_values = np.array(pixel_values)
             vision_grid_thws = np.array(vision_grid_thws)
             patch_assign_shared = np.array(patch_assign_shared)
             
             data = {"pixel_values": pixel_values, "image_grid_thw": vision_grid_thws,
+                    "patch_assign": patch_assign_shared,
                     "patch_assign_sep": patch_assign_sep,
-                    "patch_assign_len": patch_assign_len,
-                    "patch_assign_shared": patch_assign_shared}
+                    "patch_assign_len": patch_assign_len
+                    }
 
         if videos is not None:
             pixel_values, vision_grid_thws = [], []
