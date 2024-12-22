@@ -21,7 +21,7 @@
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
-- [x] [2024.12.23] Try `test.py` for ShowUI model implementation (token selection).
+- [x] [2024.12.23] Uploaded `showui` for token selection modeling implementation.
 - [x] [2024.12.15] ShowUI received **Outstanding Paper Award** at [NeurIPS2024 Open-World Agents workshop](https://sites.google.com/view/open-world-agents/schedule).
 - [x] [2024.12.9] Support int8 Quantization.
 - [x] **[2024.12.5] Major Update: ShowUI is integrated into [OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for local run!**
@@ -33,6 +33,9 @@
 See [Computer Use OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for using ShowUI to control your PC.
 
 https://github.com/user-attachments/assets/f50b7611-2350-4712-af9e-3d31e30020ee
+
+## 🕹️ UI-Guided Token Selection
+Try `test.ipynb`, which also seamless support for Qwen2VL models.
 
 ## ⭐ Quick Start
 See [Quick Start](QUICK_START.md) for model usage.
