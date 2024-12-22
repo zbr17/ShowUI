@@ -35,7 +35,7 @@ See [Computer Use OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-
 https://github.com/user-attachments/assets/f50b7611-2350-4712-af9e-3d31e30020ee
 
 ## 🕹️ UI-Guided Token Selection
-Try `test.ipynb`, which also seamless support for Qwen2VL models.
+Try `test.ipynb`, which seamless support for Qwen2VL models.
 
 <div style="display: flex; justify-content: space-between;">
   <img src="examples/chrome.png" alt="(a) Screenshot patch number: 1296" style="width: 48%;"/>
