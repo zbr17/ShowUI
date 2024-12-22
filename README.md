@@ -42,7 +42,7 @@ Our codebase supports:
 - [x] Multiple datasets mixed training
 - [x] Interleaved data formulation
 
-See [Train](train.md) for training set up.
+See [Train](TRAIN.md) for training set up.
 
 ## 🕹️ UI-Guided Token Selection
 Try `test.ipynb`, which seamless support for Qwen2VL models.
