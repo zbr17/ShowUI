@@ -1,4 +1,4 @@
-# ShowUI Training codebase
+# ShowUI Training Instruction
 ## Install
 
 ```
