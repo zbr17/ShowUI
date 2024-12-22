@@ -35,12 +35,12 @@ See [Computer Use OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-
 https://github.com/user-attachments/assets/f50b7611-2350-4712-af9e-3d31e30020ee
 
 ## 🚀 Training
-Our codebase supports:
+Our Training codebases supports:
 - [x] DeepSpeed Zero1, Zero2, Zero3
-- [x] Full-tuning, LoRA, QLoRA
+- [x] Full-tuning (FP32, FP16, BF16), LoRA, QLoRA
 - [x] SDPA, Flash Attention 2
 - [x] Multiple datasets mixed training
-- [x] Interleaved data formulation
+- [x] Interleaved data streaming
 
 See [Train](TRAIN.md) for training set up.
 
