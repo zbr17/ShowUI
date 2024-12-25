@@ -1,4 +1,7 @@
 # ShowUI Training Instruction
+The training codes are not ready totally, Please wait for more few days.
+Thanks for your understanding!
+
 ## Install
 
 ```
@@ -29,15 +32,6 @@ and organize them as following structure:
         - images
         - metadata
 ```
-
-## Create the metadata
-You need to assign the download dataset path in the following py file.
-```
-python3 hf_screenspot.py
-python3 hf_mind2web.py
-```
-
-For omniact, we provided the existed files for reference. Please refer the data structure, if you want to customize your own dataset;
 
 ## Define Dataloader
 You can simply re-use existed implementation of `dset_shared_grounding.py` for UI grounding;
