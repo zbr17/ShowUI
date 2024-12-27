@@ -92,7 +92,7 @@ def parse_args(args):
     parser.add_argument("--liger_kernel", action="store_true", default=False)
 
     # Model & Ckpt
-    parser.add_argument("--model_id", default="Qwen/Qwen2-VL-2B-Instruct", choices=["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"])
+    parser.add_argument("--model_id", default="Qwen/Qwen2-VL-2B-Instruct", choices=["ShowUI/ShowUI", "Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
     parser.add_argument("--version", default="Qwen/Qwen2-VL-2B-Instruct")
     parser.add_argument("--model_max_length", default=8192, type=int)
     parser.add_argument("--local_weight", action="store_true", default=False)
@@ -300,11 +300,25 @@ def main(args):
                                                     min_pixels=args.min_visual_tokens *28*28, 
                                                     max_pixels=args.max_visual_tokens *28*28,
                                                     model_max_length=args.model_max_length,
+                                                   )
+        processor.chat_template = "{% set image_count = namespace(value=0) %}{% set video_count = namespace(value=0) %}{% for message in messages %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is string %}{{ message['content'] }}<|im_end|>\n{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}{% set image_count.value = image_count.value + 1 %}{% if add_vision_id %}Picture {{ image_count.value }}: {% endif %}<|vision_start|><|image_pad|><|vision_end|>{% elif content['type'] == 'video' or 'video' in content %}{% set video_count.value = video_count.value + 1 %}{% if add_vision_id %}Video {{ video_count.value }}: {% endif %}<|vision_start|><|video_pad|><|vision_end|>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}<|im_end|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}"
+    elif args.model_id in ["ShowUI/ShowUI"]:
+        from model.showui.processing_showui_vl import ShowUIProcessor
+        from model.showui.modeling_showui_vl import ShowUIForConditionalGeneration
+        model_id = args.model_id.replace("Qwen/", "")
+        if args.local_weight:
+            model_url = f"{args.local_weight_dir}/{model_id}"
+        else:
+            model_url = args.model_id
+        processor = Qwen2VLProcessor.from_pretrained(
+                                                    model_url,
+                                                    min_pixels=args.min_visual_tokens *28*28, 
+                                                    max_pixels=args.max_visual_tokens *28*28,
+                                                    model_max_length=args.model_max_length,
                                                     merge_pre_assign=args.merge_pre_assign,
                                                     layer_skip_rand=args.layer_skip_rand,
                                                     layer_skip_ratio=args.layer_skip_ratio,
                                                     )
-        processor.chat_template = "{% set image_count = namespace(value=0) %}{% set video_count = namespace(value=0) %}{% for message in messages %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is string %}{{ message['content'] }}<|im_end|>\n{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}{% set image_count.value = image_count.value + 1 %}{% if add_vision_id %}Picture {{ image_count.value }}: {% endif %}<|vision_start|><|image_pad|><|vision_end|>{% elif content['type'] == 'video' or 'video' in content %}{% set video_count.value = video_count.value + 1 %}{% if add_vision_id %}Video {{ video_count.value }}: {% endif %}<|vision_start|><|video_pad|><|vision_end|>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}<|im_end|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}"
 
     # Create model
     torch_dtype = torch.float32
@@ -321,11 +335,13 @@ def main(args):
                     llm_int8_skip_modules=["img_projection"],
                 ) if args.use_qlora else None
 
-    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"]:
-        # from transformers import Qwen2VLForConditionalGeneration
-        from model.qwen2_vl.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
+    if :
+
+    elif args.model_id in ["ShowUI/ShowUI"]:
+        from model.showui.modeling_showui_vl import ShowUIForConditionalGeneration
         qwen_layer_lm = 28
         qwen_layer_vis = 32
+        
         def parse_layer_type(str_ranges, L, default=0):
             result = [default] * L
             matches = re.findall(r'\[\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]', str_ranges)
@@ -344,10 +360,10 @@ def main(args):
         else:
             model_url = args.model_id
 
-        if args.liger_kernel:
-            print("Apply liger kernel to Qwen2-VL")
-            from liger_kernel.transformers import apply_liger_kernel_to_qwen2_vl
-            apply_liger_kernel_to_qwen2_vl()
+        # if args.liger_kernel:
+        #     print("Apply liger kernel to ShowUI")
+        #     from liger_kernel.transformers import apply_liger_kernel_to_qwen2_vl
+        #     apply_liger_kernel_to_qwen2_vl()
 
         model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_url,
@@ -380,7 +396,7 @@ def main(args):
     if lora_r > 0:
         lora_alpha = args.lora_alpha
         lora_dropout = args.lora_dropout
-        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "ShowUI/ShowUI"]:
             exclude_module = ["visual"] if not args.tune_visual_encoder else []
             exclude_module += ["lm_head"] if args.freeze_lm_embed else exclude_module
             # this might be applied for the style variant; should be removed in future;
@@ -411,7 +427,7 @@ def main(args):
         model.gradient_checkpointing_enable()
 
     if not args.tune_visual_encoder:
-        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "ShowUI/ShowUI"]:
             if args.lora_r > 0:
                 for p in model.base_model.model.visual.parameters():
                     p.requires_grad = False
@@ -425,7 +441,7 @@ def main(args):
                 p.requires_grad = True
 
     if args.freeze_lm_embed:
-        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "ShowUI/ShowUI"]:
             if args.lora_r > 0:
                 for p in model_child.embed_tokens.parameters():
                     p.requires_grad = False
@@ -433,7 +449,7 @@ def main(args):
                 for p in model_child.embed_tokens.parameters():
                     p.requires_grad = False
 
-    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "ShowUI/ShowUI"]:
         if args.merge_style != 's0':
             for n, p in model.named_parameters():
                 if 'weight_layer' in n:
