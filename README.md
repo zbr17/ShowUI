@@ -21,6 +21,7 @@
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
+- [x] [2024.12.28] Update training codes and instructions.
 - [x] [2024.12.23] Update `showui` for UI-guided token selection implementation.
 - [x] [2024.12.15] ShowUI received **Outstanding Paper Award** at [NeurIPS2024 Open-World Agents workshop](https://sites.google.com/view/open-world-agents/schedule).
 - [x] [2024.12.9] Support int8 Quantization.
