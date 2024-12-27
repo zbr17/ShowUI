@@ -60,8 +60,12 @@ See [Quick Start](QUICK_START.md) for model usage.
 ## 🤗 Local Gradio
 See [Gradio](GRADIO.md) for installation.
 
+## ❤ Acknowledgement
+We extend our gratitude to [SeeClick](https://github.com/njucckevin/SeeClick) for providing their codes and datasets.
 
-## BibTeX
+Special thanks to [Siyuan](https://x.com/who_s_yuan) for assistance with the Gradio demo and OOTB support.
+
+## 🎓 BibTeX
 If you find our work helpful, please consider citing our paper.
 
 ```
