@@ -89,8 +89,8 @@ Please keep the `bsz` as 1, if you want to enlarge the bsz, just increase the `g
 
 ```
 deepspeed --include localhost:1 --master_port 1234 train.py \
-  --model_id='showui/ShowUI-2B' \
-  --version='showui/ShowUI-2B' \
+  --model_id='Qwen/Qwen2-VL-2B-Instruct' \
+  --version='Qwen/Qwen2-VL-2B-Instruct' \
   --dataset_dir='$_DATA_DIR' \
   --log_base_dir='$_SAVE_DIR' \
   --epochs=50 \
