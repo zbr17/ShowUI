@@ -82,7 +82,7 @@ sample = {
 For navigation, you need to define the dataset_mapping as above;
 Beside, you need to define the action space in `template/shared_navigation.py` for your customized scenario.
 
-## Start Training
+## 〽️Start Grounding Training
 Below are instruction for training on grounding then evaluation on screenspot grounding;
 
 Please keep the `bsz` as 1, if you want to enlarge the bsz, just increase the `grad_accumulation_steps`.
@@ -126,6 +126,9 @@ We have provided evaluation script for screenspot in `main/eval_screenspot.py`.
 If you want to evaluate on your own setting, you need to define the evaluation function and place it under `main/eval_X.py`
 
 You should able monitor the training information in wandb panel.
+
+## 〽️Start Navigation Training
+TBD
 
 ## Save the model checkpoint;
 Once you finished the training, you can use the following cmd to save the model checkpoint.
