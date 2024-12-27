@@ -30,11 +30,11 @@ $_DATA_DIR
         - metadata
 ```
 
-## Define Dataloader
+## ⚙️Define Dataloader
 You can simply re-use existed implementation of `dset_shared_grounding.py` for UI grounding;
 or `dset_shared_navigation.py` for UI navigation;
 
-For grounding, you just need to define the dataset_mapping for path identification such as `"seeclick": "SeeClick"`
+For grounding, you just need to define the dataset_mapping for path identification such as `"showui": "hf_train.json"`
 
 Please organize the UI grounding metadata as following:
 ```
@@ -130,7 +130,7 @@ You should able monitor the training information in wandb panel.
 ## 〽️Start Navigation Training
 TBD
 
-## Save the model checkpoint;
+## ⬇️Save Model Checkpoints
 Once you finished the training, you can use the following cmd to save the model checkpoint.
 
 ```bash
