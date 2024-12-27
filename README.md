@@ -66,7 +66,7 @@ We extend our gratitude to [SeeClick](https://github.com/njucckevin/SeeClick) fo
 Special thanks to [Siyuan](https://x.com/who_s_yuan) for assistance with the Gradio demo and OOTB support.
 
 ## 🎓 BibTeX
-If you find our work helpful, please consider citing our paper.
+If you find our work helpful, please kindly consider citing our paper.
 
 ```
 @misc{lin2024showui,
@@ -79,3 +79,7 @@ If you find our work helpful, please consider citing our paper.
       url={https://arxiv.org/abs/2411.17465}, 
 }
 ```
+
+If you like our project, please give us a star ⭐ on GitHub for the latest update.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=showlab/ShowUI&type=Timeline)](https://star-history.com/#showlab/ShowUI&Timeline)
