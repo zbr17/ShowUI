@@ -5,24 +5,8 @@ import pdb
 import sys
 sys.path.append(".")
 from data.data_utils import IGNORE_INDEX
-from data.dset_miniwob import MiniWobDataset
-from data.dset_aitw import AitwDataset
-from data.dset_aitz import AitzDataset
-from data.dset_omniact import OmniActDataset
-from data.dset_seeclick import SeeClickDataset
-from data.dset_mind2web import Mind2WebDataset
 from data.dset_screenspot import ScreenSpotDataset
-from data.dset_odyssey import OdysseyDataset
-from data.dset_guiworld import GUIWorldDataset
-from data.dset_act2cap import Act2CapDataset
-
 from data.dset_shared_grounding import GroundingDataset
-from data.dset_shared_onestep import OneStepDataset
-from data.dset_shared_captioning import CaptioningDataset
-from data.dset_shared_navigation import NavigationDataset
-from data.dset_shared_chat import ChatDataset
-from data.dset_shared_llava import LLaVADataset
-from data.dset_xlam import XLAMDataset
 
 from transformers import AutoProcessor
 
@@ -73,22 +57,12 @@ def collate_fn(batch, processor=None):
 
     attention_mask = input_ids.ne(processor.tokenizer.pad_token_id)
 
-    # batch_data_sam = [x[1] for x in batch]
-    # image_sam_list, masks_list, \
-    # seg_label_list, resize_list = tuple([instance[key] for instance in batch_data_sam]
-    #                                     for key in ("image_sam", "masks", "seg_labels", "resize"))
-
     meta_data = [x[-1] for x in batch]
 
     result = {
-        # "images_sam": torch.stack(image_sam_list, dim=0),
         "pixel_values": pixel_values,
         "input_ids": input_ids,
         "labels": labels,
-        # "attention_mask": attention_mask,
-        # "masks_list": masks_list,
-        # "label_list": seg_label_list,
-        # "resize_list": resize_list,
         "image_sizes": image_sizes,
         "meta_data": meta_data,
     }
@@ -99,14 +73,6 @@ def collate_fn(batch, processor=None):
             key_tmp = torch.cat(key_tmp, dim=0)
             result[key] = key_tmp 
 
-    # if "patch_assign" in batch_data_phi3v[0]:
-    #     patch_assign = [instance["patch_assign"] for instance in batch_data_phi3v]
-    #     patch_assign = torch.cat(patch_assign, dim=0)
-    #     result["patch_assign"] = patch_assign
-    #     patch_assign_len = [instance["patch_assign_len"] for instance in batch_data_phi3v]
-    #     patch_assign_len = torch.cat(patch_assign_len, dim=0)
-    #     result["patch_assign_len"] = patch_assign_len
-
     for key, pad_val in zip(['patch_pos', 'select_mask'], [-1, True]):
         if key in batch_data_phi3v[0]:
             key_tmp = [instance[key] for instance in batch_data_phi3v]
@@ -115,16 +81,6 @@ def collate_fn(batch, processor=None):
             key_tmp = torch.cat(padded_key, dim=0)
             result[key] = key_tmp
 
-    # pad the answer by -1;
-    # if "patch_pos" in batch_data_phi3v[0]:
-    #     patch_pos = [instance["patch_pos"] for instance in batch_data_phi3v]
-    #     max_length = input_ids.size(1)
-    #     if patch_pos[0].dtype == torch.bool:
-    #         padded_patch_pos = [torch.nn.functional.pad(pos, (0, max_length - pos.size(1)), value=True) for pos in patch_pos]
-    #     else:
-    #         padded_patch_pos = [torch.nn.functional.pad(pos, (0, max_length - pos.size(1)), value=-1) for pos in patch_pos]
-    #     patch_pos = torch.cat(padded_patch_pos, dim=0)
-    #     result["patch_pos"] = patch_pos
     return result
 
 class HybridDataset(torch.utils.data.Dataset):
@@ -294,193 +250,7 @@ class HybridDataset(torch.utils.data.Dataset):
         for dataset in self.datasets:
             dataset_queue.append(dataset)
             # Pretraining / SFT
-            if dataset == "seeclick":
-                self.all_datasets.append(
-                    # SeeClickDataset(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        seeclick_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        xy_int=self.xy_int,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "rico":
-                self.all_datasets.append(
-                    # RicoDataset(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        rico_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        xy_int=self.xy_int,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "assistgui":
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        assistgui_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,        
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "synthesis":
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        synthesis_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "guiexp":
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guiexp_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "guiexpweb":
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guiexpweb_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "omniact":
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        omniact_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "showui":
+            if dataset == "showui":
                 self.all_datasets.append(
                     GroundingDataset(
                         dataset,
@@ -506,431 +276,6 @@ class HybridDataset(torch.utils.data.Dataset):
                         uniform_prompt=self.uniform_prompt
                     )
                 )
-            elif dataset == "guienv":
-                guienv_data_tmp = gui_env_list[dataset_queue.count(dataset) - 1]
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guienv_data_tmp,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "osatlas":
-                osatlas_data_tmp = osatlas_list[dataset_queue.count(dataset) - 1]
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        osatlas_data_tmp,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "guiact_g":
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guiact_g_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "guiact":
-                guiact_data_tmp = gui_act_list[dataset_queue.count(dataset) - 1]
-                self.all_datasets.append(
-                    NavigationDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guiact_data_tmp,
-                        num_turn=self.num_turn,
-                        num_history=self.num_history,
-                        interleaved_history=self.interleaved_history,
-                        decay_factor=self.decay_factor,
-                        inference=self.inference,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        skip_readme_train=self.skip_readme_train,
-                        skip_readme_test=self.skip_readme_test,
-                    )
-                )
-            elif dataset == "guichat":
-                self.all_datasets.append(
-                    ChatDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guichat_data,
-                        inference=self.inference,
-                        shuffle_image_token=self.shuffle_image_token,
-                        chat_ground=True,
-                        chat_ground_point=0.5,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "llava":
-                self.all_datasets.append(
-                    LLaVADataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        llava_data,
-                        inference=self.inference,
-                        shuffle_image_token=self.shuffle_image_token,
-                        # chat_ground=True,
-                        # chat_ground_point=0.5,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "guiworld":
-                self.all_datasets.append(
-                    GUIWorldDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        guiworld_data,
-                        inference=self.inference,
-                        shuffle_image_token=self.shuffle_image_token,
-                        num_frames=self.num_frames,
-                        max_frames=self.max_frames,
-                        frame_sampling=self.frame_sampling,
-                        random_sample=False,
-                    )
-                )
-            elif dataset == "act2cap":
-                self.all_datasets.append(
-                    Act2CapDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        act2cap_data,
-                        inference=self.inference,
-                        shuffle_image_token=self.shuffle_image_token,
-                        num_frames=self.num_frames,
-                        max_frames=self.max_frames,
-                        frame_sampling=self.frame_sampling,
-                        random_sample=False,
-                    )
-                )
-            elif dataset == "amex":
-                amex_data_tmp = amex_list[dataset_queue.count(dataset) - 1]
-                self.all_datasets.append(
-                    GroundingDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        amex_data_tmp,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        text2point=self.text2point,
-                        text2bbox=self.text2bbox,
-                        point2text=self.point2text,
-                        bbox2text=self.bbox2text,
-                        shuffle_image_token=self.shuffle_image_token,
-                        crop_min=crop_min,
-                        crop_max=crop_max,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        uniform_prompt=self.uniform_prompt
-                    )
-                )
-            elif dataset == "ricosca":
-                self.all_datasets.append(
-                GroundingDataset(
-                    dataset,
-                    base_image_dir,
-                    processor,
-                    samples_per_epoch,
-                    precision,
-                    ricosca_data,
-                    inference=False,
-                    num_turn=self.num_turn,
-                    text2point=self.text2point,
-                    text2bbox=self.text2bbox,
-                    point2text=self.point2text,
-                    bbox2text=self.bbox2text,
-                    shuffle_image_token=self.shuffle_image_token,
-                    crop_min=crop_min,
-                    crop_max=crop_max,
-                    random_sample=False,
-                    merge_patch=self.merge_patch,
-                    merge_threshold=self.merge_threshold,
-                    merge_inference=self.merge_inference,
-                    merge_random=self.merge_random,
-                    uniform_prompt=self.uniform_prompt
-                )
-            )
-            elif dataset == "widget":
-                self.all_datasets.append(
-                GroundingDataset(
-                    dataset,
-                    base_image_dir,
-                    processor,
-                    samples_per_epoch,
-                    precision,
-                    widget_data,
-                    inference=False,
-                    num_turn=self.num_turn,
-                    text2point=self.text2point,
-                    text2bbox=self.text2bbox,
-                    point2text=self.point2text,
-                    bbox2text=self.bbox2text,
-                    shuffle_image_token=self.shuffle_image_token,
-                    crop_min=crop_min,
-                    crop_max=crop_max,
-                    random_sample=False,
-                    merge_patch=self.merge_patch,
-                    merge_threshold=self.merge_threshold,
-                    merge_inference=self.merge_inference,
-                    merge_random=self.merge_random,
-                    uniform_prompt=self.uniform_prompt
-                )
-            )
-            elif dataset == "screencap":
-                self.all_datasets.append(
-                    CaptioningDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        json_data=screencap_data,
-                        inference=False,
-                        shuffle_image_token=self.shuffle_image_token,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "amexcap":
-                self.all_datasets.append(
-                    CaptioningDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        json_data=amexcap_data,
-                        inference=False,
-                        shuffle_image_token=self.shuffle_image_token,
-                        random_sample=False,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            # Downstream task
-            elif dataset == "miniwob":
-                self.all_datasets.append(
-                    MiniWobDataset(
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        miniwob_data,
-                        inference=False,
-                        num_turn=self.num_turn,
-                        num_history=self.num_history,
-                        interleaved_history=self.interleaved_history,
-                        draw_history=self.draw_history,
-                        random_sample=False,
-                        decay_factor=self.decay_factor,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "mind2web":
-                self.all_datasets.append(
-                    Mind2WebDataset(
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        mind2web_data,
-                        inference=self.inference,
-                        num_history=self.num_history,
-                        num_turn=self.num_turn,
-                        interleaved_history=self.interleaved_history,
-                        draw_history=self.draw_history,
-                        random_sample=False,
-                        decay_factor=self.decay_factor,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "aitw":
-                self.all_datasets.append(
-                    AitwDataset(
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        aitw_data,
-                        inference=self.inference,
-                        num_turn=self.num_turn,
-                        num_history=self.num_history,
-                        interleaved_history=self.interleaved_history,
-                        draw_history=self.draw_history,
-                        random_sample=False,
-                        decay_factor=self.decay_factor,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                        skip_readme_train=self.skip_readme_train,
-                        skip_readme_test=self.skip_readme_test,
-                    )
-                )
-            elif dataset == "omniact_nav":
-                self.all_datasets.append(
-                    OmniActDataset(
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        omniact_nav_data,
-                        inference=self.inference,
-                        num_turn=self.num_turn,
-                        num_history=self.num_history,
-                        interleaved_history=self.interleaved_history,
-                        draw_history=self.draw_history,
-                        random_sample=False,
-                        decay_factor=self.decay_factor,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "odyssey":
-                self.all_datasets.append(
-                    OdysseyDataset(
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        odyssey_data,
-                        inference=self.inference,
-                        num_turn=self.num_turn,                        
-                        num_history=self.num_history,
-                        interleaved_history=self.interleaved_history,
-                        draw_history=self.draw_history,
-                        random_sample=False,
-                        decay_factor=self.decay_factor,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
-            elif dataset == "aitz":
-                self.all_datasets.append(
-                    AitzDataset(
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        aitz_data,
-                        inference=self.inference,
-                        num_turn=self.num_turn,
-                        num_history=self.num_history,
-                        interleaved_history=self.interleaved_history,
-                        prob_cap=self.prob_cap,
-                        prob_res=self.prob_res,
-                        prob_plan=self.prob_plan,
-                        prob_think=self.prob_think,
-                        random_sample=False,
-                        decay_factor=self.decay_factor,
-                        merge_patch=self.merge_patch,
-                        merge_threshold=self.merge_threshold,
-                        merge_inference=self.merge_inference,
-                        merge_random=self.merge_random,
-                    )
-                )
             # Zero-shot evaluation
             elif dataset == "screenspot":
                 self.all_datasets.append(
@@ -947,18 +292,6 @@ class HybridDataset(torch.utils.data.Dataset):
                         merge_inference=self.merge_inference,
                         merge_random=self.merge_random,
                         xy_int=self.xy_int
-                    )
-                )
-            elif dataset == "xlam":
-                self.all_datasets.append(
-                    XLAMDataset(
-                        dataset,
-                        base_image_dir,
-                        processor,
-                        samples_per_epoch,
-                        precision,
-                        xlam_data,
-                        inference=False,
                     )
                 )
 
@@ -1009,8 +342,6 @@ class HybridDataset(torch.utils.data.Dataset):
                 sample_idx = np.random.choice(list(unseen_indices))
                 self.sample_recorder[ind].add(sample_idx)
                 data_main, data_meta = data[sample_idx]
-                # print("Sampled index: ", sample_idx)
-                # print("Unseen indices: ", len(unseen_indices))
                 return data_main, data_meta
 
             # training with all datasets concated once
@@ -1046,23 +377,11 @@ if __name__ == '__main__':
         processor,
         samples_per_epoch=10000,
         precision="bf16",
-        # dataset="guienv,guienv",
-        # dataset="guienv,ricosca",
-        # dataset="amex,amex",
-        # sample_rate=[1,1],
-        dataset="showui,amex,guiexp",
-        guiexpweb_data="hf_train_raw",
+        dataset="showui",
         sample_rate=[1,1,1],
         uniform_sample=True,     
         random_sample=True,
         record_sample=True,
-        # amex_data='hf_train_raw,hf_train_raw',
-        # guienv_data="hf_train_guienv_stage1,hf_train_guienv_stage2",
-        # guienv_data="hf_train_guienv_stage1",
-        # text2point=1,
-        # text2bbox=1,
-        # point2text=1,
-        # bbox2text=1,
         shuffle_image_token=True
     )
     for i in range(len(train_dataset)):

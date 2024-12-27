@@ -41,6 +41,7 @@ Our Training codebases supports:
 - [x] SDPA, Flash Attention 2
 - [x] Multiple datasets mixed training
 - [x] Interleaved data streaming
+- [x] Image randomly resize (crop, pad)
 
 See [Train](TRAIN.md) for training set up.
 

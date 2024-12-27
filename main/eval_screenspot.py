@@ -138,22 +138,6 @@ def validate_screenspot(val_loader, model_engine, processor, epoch, global_step,
             elif args.model_id in ["microsoft/Phi-3-vision-128k-instruct", "microsoft/Phi-3.5-vision-instruct"]:
                 forward_dict.update(image_sizes=input_dict["image_sizes"])
 
-            # generate_ids = model_engine.generate(
-            #                         pixel_values=input_dict["pixel_values"],
-            #                         image_sizes=input_dict["image_sizes"],
-            #                         input_ids=input_dict["input_ids"], 
-            #                         labels=input_dict["labels"],
-            #                         max_new_tokens=128,
-            #                         eos_token_id=processor.tokenizer.eos_token_id,
-            #                         )
-
-            # if args.local_rank == 1:
-            #     pdb.set_trace()
-
-            # if args.num_zoom_in == 0:
-            #     # do not open the zoom-in mode
-            #     break
-
             try:
                 generate_ids = model_engine.generate(**forward_dict, 
                                         max_new_tokens=128, 
@@ -198,43 +182,6 @@ def validate_screenspot(val_loader, model_engine, processor, epoch, global_step,
         generated_texts_unique.append(generated_texts)
         answers_unique.append(meta['bbox'])
         outputs_unique.append(outputs)
-
-        # single time inference
-        # torch.cuda.empty_cache()
-        # input_dict = dict_to_cuda(input_dict, device=f'cuda:{local_rank}')
-
-        # if args.precision == "fp16":
-        #     input_dict["pixel_values"] = input_dict["pixel_values"].half()
-        # elif args.precision == "bf16":
-        #     input_dict["pixel_values"] = input_dict["pixel_values"].bfloat16()
-        # else:
-        #     input_dict["pixel_values"] = input_dict["pixel_values"].float()
-
-        # with torch.no_grad():
-        #     generate_ids = model_engine.generate(
-        #                             pixel_values=input_dict["pixel_values"],
-        #                             image_sizes=input_dict["image_sizes"],
-        #                             input_ids=input_dict["input_ids"], 
-        #                             labels=input_dict["labels"],
-        #                             max_new_tokens=128,
-        #                             eos_token_id=processor.tokenizer.eos_token_id,
-        #                             )
-
-        #     generate_ids = generate_ids[:, input_dict['input_ids'].shape[1]:]
-        #     generated_texts = processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=True)[0]
-        #     meta = input_dict['meta_data'][0]
-        #     # print(type(meta['bbox']), meta['bbox'])
-        #     # print(type(generated_texts[0]), generated_texts[0])
-        #     # print(eval(meta['bbox']), eval(generated_texts[0]))
-
-        #     outputs = {"split": meta['split'], 'data_type': meta['data_type'],
-        #         "anno_id": meta['id'], "img_path": meta['img_url_abs'], "instruction": meta['task'], "sentence": generated_texts,
-        #         "bbox": meta['bbox'], 
-        #         "meta": meta}
-
-        #     generated_texts_unique.append(generated_texts)
-        #     answers_unique.append(meta['bbox'])
-        #     outputs_unique.append(outputs)
 
     answers_unique = gather_object(answers_unique)
     generated_texts_unique = gather_object(generated_texts_unique)

@@ -14,19 +14,6 @@ sys.path.append('.')
 from data.template import grounding_to_openai, grounding_to_openai_qwen, batch_add_answer, batch_add_answer_append
 
 dataset_mapping = {
-    "seeclick": "SeeClick",
-    "guienv": "GUI_Course/GUIEnv",
-    "guiact_g": "GUI_Course/GUIAct",
-    "assistgui": "AssistGUI",
-    "amex": "AMEX",
-    "synthesis": "Synthesis",
-    "guiexp": "GUI_Exp",
-    "guiexpweb": "GUI_Exp_Web",
-    "omniact": "OmniAct",
-    "rico": "RICO",
-    "ricosca": "RICO",
-    "widget": "RICO",
-    "osatlas": "OS-Atlas",
     "showui": "ShowUI-desktop",
 }
 
@@ -230,16 +217,12 @@ class GroundingDataset(torch.utils.data.Dataset):
         return x
 
     def __getitem__(self, idx):
-        if 'Qwen2VL' in self.processor.image_processor.image_processor_type:
-            # return self.get_qwenvl(idx)
-            while True:
-                try:
-                    return self.get_qwenvl(idx)
-                except Exception as e:
-                    print(e)
-                    idx = random.randint(0, len(self.json_data) - 1)
-        else:
-            return self.get_phi3v(idx)
+        while True:
+            try:
+                return self.get_qwenvl(idx)
+            except Exception as e:
+                print(e)
+                idx = random.randint(0, len(self.json_data) - 1)
 
     def get_qwenvl(self, idx):
         if not self.inference and self.random_sample:
@@ -312,22 +295,13 @@ class GroundingDataset(torch.utils.data.Dataset):
             data_dict_qa, answer = batch_add_answer_append(data_dict_q, answer_xy, self.processor,
                                                             append_element=element_name_list[1:], 
                                                             append_answer=answer_xy_list[1:])
-        # print(merge_patch, data_dict_qa["input_ids"][0].shape, data_dict_qa["image_grid_thw"], data_dict_q['patch_assign_len'].sum(), [x.size for x in image_phi3v])
-        # print(prompt, answer)
-        # pdb.set_trace()
 
         max_seq_len = self.processor.tokenizer.model_max_length
         data_dict = dict(
             input_ids=data_dict_qa["input_ids"][0],
-            # input_ids=data_dict_qa["input_ids"][0][:max_seq_len],
             image_sizes=data_dict_qa["image_grid_thw"],
-            # attention_mask=data_dict_qa["attention_mask"][0],
             pixel_values=data_dict_qa["pixel_values"],
-            labels=data_dict_qa["labels"][0],
-            # labels=data_dict_qa["labels"][0][:max_seq_len],
-            # patch_assign=data_dict_q['patch_assign'],
-            # patch_assign_len=data_dict_q['patch_assign_len'],
-            # patch_pos=data_dict_q['patch_pos'],            
+            labels=data_dict_qa["labels"][0],        
         )
         assert data_dict_qa["input_ids"][0].shape[0] <= max_seq_len, f"Input seq. is surpass max. seq len: {data_dict_qa['input_ids'][0].shape[0]} > {max_seq_len}"
 
@@ -337,92 +311,15 @@ class GroundingDataset(torch.utils.data.Dataset):
             data_dict['patch_assign_len'] = data_dict_q['patch_assign_len']
         if 'patch_pos' in data_dict_q:
             data_dict['patch_pos'] = data_dict_q['patch_pos']
-            # data_dict['patch_pos'] = data_dict_q['patch_pos'][0, :max_seq_len]
         if 'select_mask' in data_dict_q:
             data_dict['select_mask'] = data_dict_q['select_mask']
-            # data_dict['select_mask'] = data_dict_q['select_mask'][:max_seq_len]
 
-        return (
-            data_dict,
-            item,
-        )
-
-    def get_phi3v(self, idx):
-        if not self.inference and self.random_sample:
-            idx = random.randint(0, len(self.json_data) - 1)
-        idx = idx % len(self.json_data)
-        
-        item = self.json_data[idx]
-        if 'img_url' in item.keys():
-            image_path = os.path.join(self.IMG_DIR, item["img_url"])
-            image_phi3v = [Image.open(image_path).convert("RGB")]
-
-            if self.crop_min != 1 or self.crop_max != 1:
-                image_phi3v[0], item = random_crop_metadata(image_phi3v[0], item, scale_range=(self.crop_min, self.crop_max))
-        else:
-            image_path = ""
-            image_phi3v = None
-
-        element_list = item['element']
-        # print(image_phi3v[0].size)
-
-        k = min(self.num_turn, len(element_list))
-        assert k > 0
-        element_cand = random.choices(element_list, k=k)
-
-        sample_io = np.random.choice(len(self.sample_prob), p=self.sample_prob)
-        # element = random.choices(element_list)[0]
-        if len(element_cand) == 1:
-            element = element_cand[0]
-            element_name = element['instruction']
-            answer_xy = element['point'] if sample_io in [0, 2] else element['bbox']
-            answer_xy = [round(x, 2) for x in answer_xy]
-            if sample_io in [2, 3]:
-                element_name, answer_xy = answer_xy, element_name
-
-            source = grounding_to_openai(element_name, None, sample_io, self.shuffle_image_token)
-            prompt = self.processor.tokenizer.apply_chat_template(source, tokenize=False, add_generation_prompt=True)
-            data_dict_q = self.processor(prompt, image_phi3v, return_tensors="pt")
-            data_dict_qa, answer = batch_add_answer(data_dict_q, answer_xy, self.processor)
-
-        else:
-            element_name_list = [element['instruction'] for element in element_cand]
-            if sample_io in [0, 2]:
-                answer_xy_list = [element['point'] for element in element_cand]
-            else:
-                answer_xy_list = [element['bbox'] for element in element_cand]
-            answer_xy_list = [[round(x, 2) for x in answer_xy] for answer_xy in answer_xy_list]
-
-            if sample_io in [2, 3]:
-                element_name_list, answer_xy_list = answer_xy_list, element_name_list
-            answer_xy = answer_xy_list[0]
-
-            source = grounding_to_openai(element_name_list[0], None, sample_io, self.shuffle_image_token)
-            prompt = self.processor.tokenizer.apply_chat_template(source, tokenize=False, add_generation_prompt=True)
-            data_dict_q = self.processor(prompt, image_phi3v, return_tensors="pt")
-            data_dict_qa, answer = batch_add_answer_append(data_dict_q, answer_xy, self.processor,
-                                                            append_element=element_name_list[1:], 
-                                                            append_answer=answer_xy_list[1:])
-        max_seq_len = self.processor.tokenizer.model_max_length
-
-        data_dict = dict(
-            input_ids=data_dict_qa["input_ids"][0][:max_seq_len],
-            # attention_mask=data_dict_qa["attention_mask"][0],
-            pixel_values=data_dict_qa["pixel_values"][0],
-            image_sizes=data_dict_qa["image_sizes"][0],
-            labels=data_dict_qa["labels"][0][:max_seq_len],
-        )
         return (
             data_dict,
             item,
         )
 
 if __name__ == '__main__':
-    # from transformers import AutoProcessor  # do not remove this line
-    # from model.phi_3_vision.processing_phi3_v import Phi3VProcessor
-    # processor = Phi3VProcessor.from_pretrained("microsoft/Phi-3-vision-128k-instruct",
-    #                                            model_max_length=4096)
-
     from model.qwen2_vl.processing_qwen2_vl import Qwen2VLProcessor
     from model.qwen2_vl.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
     processor = Qwen2VLProcessor.from_pretrained(
@@ -433,12 +330,10 @@ if __name__ == '__main__':
     processor.chat_template = "{% set image_count = namespace(value=0) %}{% set video_count = namespace(value=0) %}{% for message in messages %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is string %}{{ message['content'] }}<|im_end|>\n{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}{% set image_count.value = image_count.value + 1 %}{% if add_vision_id %}Picture {{ image_count.value }}: {% endif %}<|vision_start|><|image_pad|><|vision_end|>{% elif content['type'] == 'video' or 'video' in content %}{% set video_count.value = video_count.value + 1 %}{% if add_vision_id %}Video {{ video_count.value }}: {% endif %}<|vision_start|><|video_pad|><|vision_end|>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}<|im_end|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}"
 
     dataset = GroundingDataset(
-        "guiexp",
-        # "os-atlas",
-        # "rico",
+        "showui",
         "/blob/v-lqinghong/data/GUI_database",
         processor,
-        num_turn=4,
+        num_turn=100,
         # json_data="hf_train_ground",
         json_data="hf_train_4o",
         text2point=1,
@@ -458,9 +353,3 @@ if __name__ == '__main__':
     for i in range(len(dataset)):
         data = dataset.__getitem__(i)
         data_size = str(data[1]['img_size'])
-        # if data_size not in size_dist:
-        #     size_dist[data_size] = 0
-        # size_dist[data_size] += 1
-        # # print(size_dist)
-        # print(data_size)
-        # pdb.set_trace()

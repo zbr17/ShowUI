@@ -1,8 +1,5 @@
-# ShowUI Training Instruction
-The training codes are not ready totally, Please wait for more few days.
-Thanks for your understanding!
-
-## Install
+# 🚀ShowUI Training Instruction
+## 🔧Install Environment
 
 ```
 conda create -n showui python=3.10
@@ -11,20 +8,20 @@ pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https
 pip install -r requirements.txt --user
 ```
 
-Provide wandb key under `train.py`.
-
-## Setup Datasets
+## 📦Setup Datasets
 Download grounding training dataset -- [ShowUI-desktop-8K](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
 Download grounding evaluation dataset -- [ScreenSpot](https://huggingface.co/datasets/KevinQHLin/ScreenSpot)
 
+You can use huggingface-cli to download these datasets easily.
 ```
+cd $_DATA_DIR
 huggingface-cli download showlab/ShowUI-desktop-8K --repo-type dataset --local-dir .
 huggingface-cli download KevinQHLin/ScreenSpot --repo-type dataset --local-dir .
 ```
 
-and organize them as following structure:
+Then, the dataset should be organized as following:
 ```
-[any _DIR you want]
+$_DATA_DIR
     - ScreenSpot
         - images
         - metadata
@@ -88,49 +85,57 @@ Beside, you need to define the action space in `template/shared_navigation.py` f
 ## Start Training
 Below are instruction for training on grounding then evaluation on screenspot grounding;
 
-Please keep the bsz as 1, if you want to enlarge the bsz, just increase the grad_accumulation_steps.
+Please keep the `bsz` as 1, if you want to enlarge the bsz, just increase the `grad_accumulation_steps`.
+
 ```
-deepspeed --include localhost:1 --master_port 4221 train.py \
-  --model_id='Qwen/Qwen2-VL-2B-Instruct' \
-  --version='Qwen/Qwen2-VL-2B-Instruct' \
-  --dataset_dir='/blob/v-lqinghong/data/GUI_database' \
-  --log_base_dir='/blob/v-lqinghong/experiments/VideoVLA' \
-  --epochs=1 \
+deepspeed --include localhost:1 --master_port 1234 train.py \
+  --model_id='showui/ShowUI-2B' \
+  --version='showui/ShowUI-2B' \
+  --dataset_dir='$_DATA_DIR' \
+  --log_base_dir='$_SAVE_DIR' \
+  --epochs=50 \
   --steps_per_epoch=100 \
   --batch_size=1 \
-  --grad_accumulation_steps=1 \
+  --grad_accumulation_steps=2 \
   --model_max_length=4096 \
-  --val_dataset="screenspot" \
-  --val_omniact_nav_data="hf_test" \
-  --exp_id="debug" \
+  --exp_id="showui_desktop" \
   --sample_rates="1"  \
-  --dataset="omniact"  \
-  --omniact_data="hf_train_showui_desktop"  \
-  --amex_data="hf_train_ele,hf_train_func"  \
+  --dataset="showui"  \
+  --val_dataset="screenspot"  \
   --precision="bf16" \
   --attn_imple="sdpa" \
   --workers=4 \
-  --lora_r=8 \
+  --lora_r=32 \
   --lora_alpha=64  \
   --min_visual_tokens=256  \
   --max_visual_tokens=1344  \
   --num_history=4 \
-  --num_turn=1 \
-  --interleaved_history='tttt' \
+  --num_turn=100 \
   --crop_min=0.5 \
   --crop_max=1.5 \
   --random_sample \
   --record_sample \
   --lr=0.0001 \
   --uniform_prompt  \
-  --debug \
   --ds_zero="zero2" \
   --gradient_checkpointing
 ```
+Then, the model checkpoints will be saved under `$_SAVE_DIR/$exp_id`
 
+We have provided evaluation script for screenspot in `main/eval_screenspot.py`.
 If you want to evaluate on your own setting, you need to define the evaluation function and place it under `main/eval_X.py`
 
-Then, you should able monitor the training information in wandb panel.
+You should able monitor the training information in wandb panel.
 
 ## Save the model checkpoint;
-Please refer to the `merge.sh`, which provide the instruction, how can you convert ds weight to pytorch.bin or hf model package.
+Once you finished the training, you can use the following cmd to save the model checkpoint.
+
+```bash
+exp_dir="$_SAVE_DIR/$exp_id/2024-11-28_17-30-32/"
+
+ckpt_dir="${exp_dir}/ckpt_model/"
+cd "$ckpt_dir" || { echo "Failed to cd to $ckpt_dir"; exit 1; }
+python zero_to_fp32.py . pytorch_model.bin
+mkdir -p merged_model
+CUDA_VISIBLE_DEVICES="0" python merge_weight.py --weight="$ckpt_dir/pytorch_model.bin" --lora_r=32 --lora_alpha=64
+```

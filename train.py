@@ -287,7 +287,7 @@ def main(args):
     print(f"Start job {args.exp_id}")
 
     # Create processor
-    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"]:
         from model.qwen2_vl.processing_qwen2_vl import Qwen2VLProcessor
         from model.qwen2_vl.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
         model_id = args.model_id.replace("Qwen/", "")
@@ -318,11 +318,10 @@ def main(args):
                     bnb_4bit_compute_dtype=torch.bfloat16,
                     bnb_4bit_use_double_quant=True,
                     bnb_4bit_quant_type="nf4",
-                    # follow by https://github.com/GaiZhenbiao/Phi3V-Finetuning/blob/main/train_phi3v.py
                     llm_int8_skip_modules=["img_projection"],
                 ) if args.use_qlora else None
 
-    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"]:
         # from transformers import Qwen2VLForConditionalGeneration
         from model.qwen2_vl.modeling_qwen2_vl import Qwen2VLForConditionalGeneration
         qwen_layer_lm = 28
@@ -351,8 +350,6 @@ def main(args):
             apply_liger_kernel_to_qwen2_vl()
 
         model = Qwen2VLForConditionalGeneration.from_pretrained(
-            # args.version,
-            # args.model_id,
             model_url,
             torch_dtype=torch_dtype,
             low_cpu_mem_usage=True,
@@ -383,9 +380,7 @@ def main(args):
     if lora_r > 0:
         lora_alpha = args.lora_alpha
         lora_dropout = args.lora_dropout
-        if args.model_id in ["microsoft/Phi-3-vision-128k-instruct", "microsoft/Phi-3.5-vision-instruct"]:
-            exclude_module = ["vision_model", "img_projection", "visual_model"] if not args.tune_visual_encoder else []
-        elif args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
             exclude_module = ["visual"] if not args.tune_visual_encoder else []
             exclude_module += ["lm_head"] if args.freeze_lm_embed else exclude_module
             # this might be applied for the style variant; should be removed in future;
@@ -416,13 +411,7 @@ def main(args):
         model.gradient_checkpointing_enable()
 
     if not args.tune_visual_encoder:
-        if args.model_id in ["microsoft/Phi-3-vision-128k-instruct", "microsoft/Phi-3.5-vision-instruct"]:
-            # model_child.embed_tokens.weight.requires_grad?
-            for p in model_child.vision_embed_tokens.img_projection.parameters():
-                p.requires_grad = False
-            for p in model_child.vision_embed_tokens.img_processor.vision_model.parameters():
-                p.requires_grad = False
-        elif args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
             if args.lora_r > 0:
                 for p in model.base_model.model.visual.parameters():
                     p.requires_grad = False
@@ -436,9 +425,7 @@ def main(args):
                 p.requires_grad = True
 
     if args.freeze_lm_embed:
-        if args.model_id in ["microsoft/Phi-3-vision-128k-instruct", "microsoft/Phi-3.5-vision-instruct"]:
-            raise ValueError("Not supported for Phi-3-vision-128k-instruct and Phi-3.5-vision-instruct")
-        elif args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
+        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "Qwen/Qwen2-VL-7B"]:
             if args.lora_r > 0:
                 for p in model_child.embed_tokens.parameters():
                     p.requires_grad = False
