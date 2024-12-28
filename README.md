@@ -21,7 +21,8 @@
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
-- [x] [2024.12.28] Update training codes and instructions.
+- [x] [2024.12.28] Update GPT-4o annotation recaptioning scripts.
+- [x] [2024.12.27] Update training codes and instructions.
 - [x] [2024.12.23] Update `showui` for UI-guided token selection implementation.
 - [x] [2024.12.15] ShowUI received **Outstanding Paper Award** at [NeurIPS2024 Open-World Agents workshop](https://sites.google.com/view/open-world-agents/schedule).
 - [x] [2024.12.9] Support int8 Quantization.
@@ -35,6 +36,12 @@ See [Computer Use OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-
 
 https://github.com/user-attachments/assets/f50b7611-2350-4712-af9e-3d31e30020ee
 
+## ⭐ Quick Start
+See [Quick Start](QUICK_START.md) for model usage.
+
+## 🤗 Local Gradio
+See [Gradio](GRADIO.md) for installation.
+
 ## 🚀 Training
 Our Training codebases supports:
 - [x] DeepSpeed Zero1, Zero2, Zero3
@@ -47,18 +54,15 @@ Our Training codebases supports:
 See [Train](TRAIN.md) for training set up.
 
 ## 🕹️ UI-Guided Token Selection
-Try `test.ipynb`, which seamless support for Qwen2VL models.
+Try [`test.ipynb`](test.ipynb), which seamless support for Qwen2VL models.
 
 <div style="display: flex; justify-content: space-between;">
   <img src="examples/chrome.png" alt="(a) Screenshot patch number: 1296" style="width: 48%;"/>
   <img src="examples/demo.png" alt="(b) By applying UI-graph, UI Component number: 167" style="width: 48%;"/>
 </div>
 
-## ⭐ Quick Start
-See [Quick Start](QUICK_START.md) for model usage.
-
-## 🤗 Local Gradio
-See [Gradio](GRADIO.md) for installation.
+## ✍️ Annotate your own data
+Try [`recaption.ipynb`](recaption.ipynb), where we provide instructions on how to recaption the original annotations using GPT-4o.
 
 ## ❤ Acknowledgement
 We extend our gratitude to [SeeClick](https://github.com/njucckevin/SeeClick) for providing their codes and datasets.
@@ -82,4 +86,4 @@ If you find our work helpful, please kindly consider citing our paper.
 
 If you like our project, please give us a star ⭐ on GitHub for the latest update.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=showlab/ShowUI&type=Timeline)](https://star-history.com/#showlab/ShowUI&Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=showlab/ShowUI&type=Timeline&width=600&height=300)](https://star-history.com/#showlab/ShowUI&Timeline)
