@@ -1,4 +1,6 @@
 # ShowUI
+Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer Use.
+
 <p align="center">
 <img src="assets/showui.jpg" alt="ShowUI" width="480">
 <p>
