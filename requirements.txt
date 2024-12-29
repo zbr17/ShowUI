@@ -20,3 +20,4 @@ qwen-vl-utils
 scikit-learn
 nltk
 wandb
+openai
