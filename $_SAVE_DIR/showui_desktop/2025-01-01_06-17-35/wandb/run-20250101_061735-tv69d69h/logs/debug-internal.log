@@ -1,0 +1,16 @@
+{"time":"2025-01-01T06:17:35.956349732-08:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2025-01-01T06:17:35.956383575-08:00","level":"INFO","msg":"created symlink","path":"$_SAVE_DIR/showui_desktop/2025-01-01_06-17-35/wandb/run-20250101_061735-tv69d69h/logs/debug-core.log"}
+{"time":"2025-01-01T06:17:36.069410204-08:00","level":"INFO","msg":"created new stream","id":"tv69d69h"}
+{"time":"2025-01-01T06:17:36.069484538-08:00","level":"INFO","msg":"stream: started","id":"tv69d69h"}
+{"time":"2025-01-01T06:17:36.069530936-08:00","level":"INFO","msg":"writer: Do: started","stream_id":"tv69d69h"}
+{"time":"2025-01-01T06:17:36.069563936-08:00","level":"INFO","msg":"handler: started","stream_id":"tv69d69h"}
+{"time":"2025-01-01T06:17:36.06965747-08:00","level":"INFO","msg":"sender: started","stream_id":"tv69d69h"}
+{"time":"2025-01-01T06:17:36.269519715-08:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-01-01T06:17:38.311299692-08:00","level":"INFO","msg":"stream: closing","id":"tv69d69h"}
+{"time":"2025-01-01T06:17:38.311352025-08:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-01-01T06:17:38.312246788-08:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-01-01T06:17:38.673908434-08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-01-01T06:17:38.795304788-08:00","level":"INFO","msg":"handler: closed","stream_id":"tv69d69h"}
+{"time":"2025-01-01T06:17:38.795387979-08:00","level":"INFO","msg":"sender: closed","stream_id":"tv69d69h"}
+{"time":"2025-01-01T06:17:38.795392636-08:00","level":"INFO","msg":"writer: Close: closed","stream_id":"tv69d69h"}
+{"time":"2025-01-01T06:17:38.79555789-08:00","level":"INFO","msg":"stream: closed","id":"tv69d69h"}

@@ -21,13 +21,13 @@ from torch.utils.tensorboard import SummaryWriter
 from transformers import AutoProcessor, BitsAndBytesConfig      # do not remove this line
 from main.trainer import train
 from main.evaluator import validate as validate_default
-from main.eval_mind2web import validate_mind2web
-from main.eval_omniact_nav import validate_omniact_nav
-from main.eval_aitw import validate_aitw
-from main.eval_aitz import validate_aitz
+# from main.eval_mind2web import validate_mind2web
+# from main.eval_omniact_nav import validate_omniact_nav
+# from main.eval_aitw import validate_aitw
+# from main.eval_aitz import validate_aitz
 from main.eval_screenspot import validate_screenspot
-from main.eval_odyssey import validate_odyssey
-from main.eval_guiworld import validate_guiworld
+# from main.eval_odyssey import validate_odyssey
+# from main.eval_guiworld import validate_guiworld
 
 from model.utils import find_target_linear_names
 from data.dataset import HybridDataset, collate_fn
@@ -335,10 +335,9 @@ def main(args):
                     llm_int8_skip_modules=["img_projection"],
                 ) if args.use_qlora else None
 
-    if :
-
-    elif args.model_id in ["ShowUI/ShowUI"]:
-        from model.showui.modeling_showui_vl import ShowUIForConditionalGeneration
+    # if args.model_id in ["ShowUI/ShowUI"]:
+    if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct"]:
+        # from model.showui.modeling_showui_vl import ShowUIForConditionalGeneration
         qwen_layer_lm = 28
         qwen_layer_vis = 32
         
@@ -448,12 +447,6 @@ def main(args):
             elif args.lora_r == 0:
                 for p in model_child.embed_tokens.parameters():
                     p.requires_grad = False
-
-        if args.model_id in ["Qwen/Qwen2-VL-2B-Instruct", "Qwen/Qwen2-VL-7B-Instruct", "ShowUI/ShowUI"]:
-        if args.merge_style != 's0':
-            for n, p in model.named_parameters():
-                if 'weight_layer' in n:
-                    p.requires_grad = True
 
     # Check trainable parameters
     list_of_params_to_optimize = []

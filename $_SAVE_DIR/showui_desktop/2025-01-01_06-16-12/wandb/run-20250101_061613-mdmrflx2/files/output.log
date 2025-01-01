@@ -1,0 +1,13 @@
+Start job showui_desktop
+Traceback (most recent call last):
+  File "/home/qinghong/showui_public/ShowUI/train.py", line 748, in <module>
+    main(sys.argv[1:])
+  File "/home/qinghong/showui_public/ShowUI/train.py", line 385, in main
+    model.config.use_cache = False
+UnboundLocalError: local variable 'model' referenced before assignment
+Traceback (most recent call last):
+  File "/home/qinghong/showui_public/ShowUI/train.py", line 748, in <module>
+    main(sys.argv[1:])
+  File "/home/qinghong/showui_public/ShowUI/train.py", line 385, in main
+    model.config.use_cache = False
+UnboundLocalError: local variable 'model' referenced before assignment

@@ -87,17 +87,20 @@ Below are instruction for training on grounding then evaluation on screenspot gr
 
 Please keep the `bsz` as 1, if you want to enlarge the bsz, just increase the `grad_accumulation_steps`.
 
+Our codebase use [Wandb](https://wandb.ai/) to monitor training process, please provide your own Wandb API key by `$WANDB_KEY`.
+
 ```
 deepspeed --include localhost:1 --master_port 1234 train.py \
+  --wandb_key=$WANDB_KEY \
   --model_id='Qwen/Qwen2-VL-2B-Instruct' \
   --version='Qwen/Qwen2-VL-2B-Instruct' \
-  --dataset_dir='$_DATA_DIR' \
-  --log_base_dir='$_SAVE_DIR' \
+  --dataset_dir=$_DATA_DIR \
+  --log_base_dir=$_SAVE_DIR \
   --epochs=50 \
   --steps_per_epoch=100 \
   --batch_size=1 \
   --grad_accumulation_steps=2 \
-  --model_max_length=4096 \
+  --model_max_length=8192 \
   --exp_id="showui_desktop" \
   --sample_rates="1"  \
   --dataset="showui"  \
