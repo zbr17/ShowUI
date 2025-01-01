@@ -47,6 +47,7 @@ See [Gradio](GRADIO.md) for installation.
 ## 🚀 Training
 Our Training codebases supports:
 - [x] Wandb training monitor
+- [x] Self-customized model
 - [x] DeepSpeed Zero1, Zero2, Zero3
 - [x] Full-tuning (FP32, FP16, BF16), LoRA, QLoRA
 - [x] SDPA, Flash Attention 2
