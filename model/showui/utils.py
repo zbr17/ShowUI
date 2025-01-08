@@ -18,7 +18,7 @@ def get_select_mask(tensor, skip_ratio=0, rand=False):
             num_to_skip = int(round(num_positions * skip_ratio))
             num_to_retain = max(1, num_positions - num_to_skip)
             if rand:
-                # rand means random select subset of selective tokens
+                # rand means random select subset of selective tokens for layer-wise
                 perm = torch.randperm(num_positions, device=tensor.device)
                 positions_to_retain = positions[perm[:num_to_retain]]
             else:

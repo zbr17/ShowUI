@@ -20,6 +20,7 @@
 """
 Processor class for ShowUI, inherited from Qwen2-VL.
 """
+import pdb
 import torch
 from typing import List, Union
 
@@ -30,6 +31,7 @@ from transformers.tokenization_utils_base import PreTokenizedInput, TextInput
 from transformers.utils import logging
 
 from .image_processing_showui import ShowUIImageProcessor
+from .utils import get_select_mask
 
 logger = logging.get_logger(__name__)
 
@@ -68,11 +70,11 @@ class ShowUIProcessor(ProcessorMixin):
         super().__init__(image_processor, tokenizer, chat_template=chat_template)
         # inherited from Qwen2-VL.        
         self.image_processor = ShowUIImageProcessor(**vars(image_processor))
-        # 
-        self.layer_skip_ratio = kwargs.get("layer_skip_ratio", 0)
-        self.layer_skip_rand = kwargs.get("layer_skip_rand", False)
-        self.merge_pre_assign = kwargs.get("merge_pre_assign", False)
-        
+        # for showUI preprocessor
+        self.ui_mask_pre = kwargs.get("ui_mask_pre", False)
+        self.ui_mask_ratio = kwargs.get("ui_mask_ratio", 0)
+        self.ui_mask_rand = kwargs.get("ui_mask_rand", False)
+
     def __call__(
         self,
         images: ImageInput = None,
@@ -104,6 +106,8 @@ class ShowUIProcessor(ProcessorMixin):
                 tensor, or a nested list of 3D frames. Both channels-first and channels-last formats are supported.
             ui_graph (`bool`, *optional*, defaults to `False`):
                 Whether to build ui graph.
+            ui_graph_mask (`bool`, *optional*, defaults to `True`):
+                Whether to select visual token in advance based on the built ui graph.
             ui_graph_threshold (`float`, *optional*, defaults to `0.0`):
                 If build, this parameter sets the patch-wise difference threshold. 
                 A larger threshold results in sparser components, while a smaller threshold leads to denser components.
@@ -194,6 +198,11 @@ class ShowUIProcessor(ProcessorMixin):
                 text_inputs['patch_pos'][0, i+1: i+1+cur_img_len] = image_inputs['patch_assign'][pre_start: pre_start+cur_img_len]
                 cur_img_idx += 1
                 pre_start += cur_img_len
+        
+        if self.ui_mask_pre:
+            text_inputs['select_mask'] = get_select_mask(text_inputs['patch_pos'][0], 
+                                                        skip_ratio=self.ui_mask_ratio, 
+                                                        rand=(training and self.ui_mask_rand)).unsqueeze(0)
         return BatchFeature(data={**text_inputs, **image_inputs, **videos_inputs})
 
     def batch_decode(self, *args, **kwargs):

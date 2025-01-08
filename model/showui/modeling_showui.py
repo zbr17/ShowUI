@@ -841,6 +841,7 @@ class Qwen2VLDecoderLayer(nn.Module):
         cache_position: Optional[torch.LongTensor] = None,
         position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,  # necessary, but kept here for BC
         patch_pos: Optional[torch.LongTensor] = None,
+        select_mask: Optional[torch.LongTensor] = None,
         **kwargs,
     ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
         """
@@ -862,6 +863,8 @@ class Qwen2VLDecoderLayer(nn.Module):
                 with `head_dim` being the embedding dimension of each attention head.
             patch_pos (`torch.LongTensor` of shape `(sequence_length)`, *optional*):
                 Indices depicting the UI component to which the input visual tokens belongs, where -1 indicates textual tokens.
+            select_mask (`torch.LongTensor` of shape `(sequence_length)`, *optional*):
+                Indices depicting the visual patch index tht be selected without skipping.
             kwargs (`dict`, *optional*):
                 Arbitrary kwargs to be ignored, used for FSDP and other methods that injects code
                 into the model
@@ -889,6 +892,7 @@ class Qwen2VLDecoderLayer(nn.Module):
                 cache_position,
                 position_embeddings,
                 patch_pos,
+                select_mask,
                 **kwargs,
             )
         else:
@@ -972,6 +976,7 @@ class Qwen2VLDecoderLayer(nn.Module):
         cache_position: Optional[torch.LongTensor] = None,
         position_embeddings: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,  # necessary, but kept here for BC
         patch_pos: Optional[torch.LongTensor] = None,
+        select_mask: Optional[torch.LongTensor] = None,
         **kwargs,
     ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
         """
@@ -995,6 +1000,8 @@ class Qwen2VLDecoderLayer(nn.Module):
                 with `head_dim` being the embedding dimension of each attention head.
             patch_pos (`torch.LongTensor` of shape `(sequence_length)`, *optional*):
                 Indices depicting the UI component to which the input visual tokens belongs, where -1 indicates textual tokens.
+            select_mask (`torch.LongTensor` of shape `(sequence_length)`, *optional*):
+                Indices depicting the visual patch index tht be selected without skipping.
             kwargs (`dict`, *optional*):
                 Arbitrary kwargs to be ignored, used for FSDP and other methods that injects code
                 into the model
@@ -1005,11 +1012,11 @@ class Qwen2VLDecoderLayer(nn.Module):
         layer_skip_ratio = getattr(self, "layer_skip_ratio", 0)
 
         if patch_pos is not None and layer_skip_ratio != 0:
-            # if select_mask is not None:
-            #     retain_mask = select_mask[0]
-            # else:
-            #     retain_mask = get_select_mask(patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)).to(device)
-            retain_mask = get_select_mask(patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)).to(device)
+            if select_mask is not None:
+                retain_mask = select_mask[0]
+            else:
+                retain_mask = get_select_mask(patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)).to(device)
+            # retain_mask = get_select_mask(patch_pos[0], layer_skip_ratio, rand=(self.training and self.layer_skip_rand)).to(device)
 
             selected_hidden_states = hidden_states[:, retain_mask, :]
             adjusted_position_ids = position_ids[:, :, retain_mask]
@@ -1236,7 +1243,8 @@ class ShowUIModel(ShowUIPreTrainedModel):
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
         cache_position: Optional[torch.LongTensor] = None,
-        patch_pos = None,
+        patch_pos: Optional[torch.LongTensor] = None,
+        select_mask: Optional[torch.LongTensor] = None,
     ) -> Union[Tuple, BaseModelOutputWithPast]:
         output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
         output_hidden_states = (
@@ -1305,6 +1313,7 @@ class ShowUIModel(ShowUIPreTrainedModel):
                     cache_position,
                     position_embeddings,
                     patch_pos,
+                    select_mask,
                 )
             else:
                 layer_outputs = decoder_layer(
@@ -1316,7 +1325,8 @@ class ShowUIModel(ShowUIPreTrainedModel):
                     use_cache=use_cache,
                     cache_position=cache_position,
                     position_embeddings=position_embeddings,
-                    patch_pos=patch_pos,                    
+                    patch_pos=patch_pos,
+                    select_mask=select_mask,        
                 )
 
             hidden_states = layer_outputs[0]
@@ -1786,6 +1796,7 @@ class ShowUIForConditionalGeneration(ShowUIPreTrainedModel, GenerationMixin):
         patch_assign_len: Optional[torch.LongTensor] = None,
         patch_assign_sep: Optional[torch.LongTensor] = None,
         patch_pos: Optional[torch.LongTensor] = None,
+        select_mask: Optional[torch.LongTensor] = None,
     ) -> Union[Tuple, ShowUICausalLMOutputWithPast]:
         r"""
         Args:
@@ -1904,7 +1915,8 @@ class ShowUIForConditionalGeneration(ShowUIPreTrainedModel, GenerationMixin):
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
             cache_position=cache_position,
-            patch_pos=patch_pos
+            patch_pos=patch_pos,
+            select_mask=select_mask,
         )
 
         hidden_states = outputs[0]
@@ -1996,8 +2008,10 @@ class ShowUIForConditionalGeneration(ShowUIPreTrainedModel, GenerationMixin):
 
         if cache_position[0] == 0:
             patch_pos = kwargs.get("patch_pos", None)
+            select_mask = kwargs.get("select_mask", None)
         else:
             patch_pos = None
+            select_mask = None
         
         model_inputs.update(
             {
@@ -2010,7 +2024,8 @@ class ShowUIForConditionalGeneration(ShowUIPreTrainedModel, GenerationMixin):
                 "image_grid_thw": image_grid_thw,
                 "video_grid_thw": video_grid_thw,
                 "cache_position": cache_position,
-                "patch_pos": patch_pos,                
+                "patch_pos": patch_pos,
+                "select_mask": select_mask,           
             }
         )
         return model_inputs
