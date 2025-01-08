@@ -70,10 +70,14 @@ class ShowUIProcessor(ProcessorMixin):
         super().__init__(image_processor, tokenizer, chat_template=chat_template)
         # inherited from Qwen2-VL.        
         self.image_processor = ShowUIImageProcessor(**vars(image_processor))
-        # for showUI preprocessor
+        # ShowUI preprocessor options
+        # Prebuild patch selection indices in the preprocessor (not in model layers)
         self.ui_mask_pre = kwargs.get("ui_mask_pre", False)
+        # Specify the percentage of patch tokens to select
         self.ui_mask_ratio = kwargs.get("ui_mask_ratio", 0)
+        # Enable random selection instead of uniform selection
         self.ui_mask_rand = kwargs.get("ui_mask_rand", False)
+
 
     def __call__(
         self,
