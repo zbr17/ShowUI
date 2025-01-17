@@ -36,14 +36,16 @@ Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer U
 - [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop`](https://huggingface.co/datasets/showlab/ShowUI-desktop).
 - [x] [2024.11.16] [`showlab/ShowUI-2B`](https://huggingface.co/showlab/ShowUI-2B) is available at huggingface.
 
+## ⚡ API Calling
+Run `python3 api.py` by providing a screenshot and a query.
+> Since we are based on huggingface gradio client, you don't need a GPU to deploy the model locally 🤗
+
 ## 🖥️ Computer Use
 See [Computer Use OOTB](https://github.com/showlab/computer_use_ootb?tab=readme-ov-file) for using ShowUI to control your PC.
 
 https://github.com/user-attachments/assets/f50b7611-2350-4712-af9e-3d31e30020ee
 
 ## ⭐ Quick Start
-Run `python3 api.py` by providing a screenshot and a query.
-
 See [Quick Start](QUICK_START.md) for local model usage.
 
 ## 🤗 Local Gradio
