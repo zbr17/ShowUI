@@ -1,5 +1,4 @@
 import ast
-from datetime import datetime
 from PIL import Image, ImageDraw
 from gradio_client import Client, handle_file
 
