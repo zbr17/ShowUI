@@ -43,7 +43,7 @@ class ShowUIProvider:
 
 if __name__ == "__main__":
     showuiprovider = ShowUIProvider()
-    img_url = "ShowUI/examples/chrome.png"
+    img_url = "examples/chrome.png"
     query = "search box"
     result = showuiprovider.call(query, img_url)
     print(result)
