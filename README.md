@@ -24,7 +24,7 @@ Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer U
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
-- [x] [2025.1.17] Support API calling via Gradio Client, please try `showui_api.py`.
+- [x] [2025.1.17] Support API calling via Gradio Client, please try `[showui_api.py](showui_api.py)`.
 - [x] [2025.1.5] Release the [`ShowUI-web`](https://huggingface.co/datasets/showlab/ShowUI-web) dataset.
 - [x] [2024.12.28] Update GPT-4o annotation recaptioning scripts.
 - [x] [2024.12.27] Update training codes and instructions.
