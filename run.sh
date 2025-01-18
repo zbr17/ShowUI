@@ -36,8 +36,7 @@ deepspeed --include localhost:1 --master_port 5678 train.py \
   --ds_zero="zero2" \
   --gradient_checkpointing  \
   --lm_skip_ratio=0.5   \
-  --lm_skip_layer='[1,28,1]'    \
-  --eval_only
+  --lm_skip_layer='[1,28,0]'
 
 # Fine-tune Qwen2VL
 # deepspeed --include localhost:1 --master_port 5678 train.py \

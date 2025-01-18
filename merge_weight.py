@@ -14,7 +14,6 @@ def parse_args(args):
     parser = argparse.ArgumentParser(
         description="merge lora weights and save model with hf format"
     )
-
     # Env
     parser.add_argument(
         "--precision",
@@ -110,7 +109,6 @@ def main(args):
     model = model.merge_and_unload()
     state_dict = {}
     for k, v in model.state_dict().items():
-        # if "vision_tower" not in k:
         state_dict[k] = v
     model.save_pretrained(args.save_path, state_dict=state_dict, safe_serialization=False)
     processor.save_pretrained(args.save_path)

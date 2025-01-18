@@ -124,11 +124,13 @@ def parse_args(args):
     parser.add_argument("--uimask_ratio", default=0.5, type=float, help="Specify the percentage of patch tokens to skip per component")
     parser.add_argument("--uimask_rand", action="store_true", default=False, help="Enable random token selection instead of uniform selection")
     ### ShowUI Model
+    # 0 is without layer token selection, 1 is with layer token selection. Below we provide examples:
+    # [1,28,1] means that all LM layers use token selection; [1,28,0] means that do not.
+    # Interleaved layer-wise '[2,2,1],[4,4,1],[6,6,1],[8,8,1],[10,10,1],[12,12,1],[14,14,1],[16,16,1],[18,18,1],[20,20,1],[22,22,1],[24,24,1],[26,26,1]'
     parser.add_argument("--lm_skip_ratio", default=0, type=float)
     parser.add_argument("--lm_skip_layer", default='[1,28,0]', type=str)
     parser.add_argument("--vis_skip_ratio", default=0, type=float)
     parser.add_argument("--vis_skip_layer", default='[1,32,0]', type=str)
-
     # Pretrain / Supervised Fine-tuning
     parser.add_argument("--showui_data", default="hf_train", type=str)
     parser.add_argument("--amex_data", default="hf_train", type=str)
