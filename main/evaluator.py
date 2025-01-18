@@ -2,6 +2,7 @@ import tqdm
 import torch
 from data.data_utils import AverageMeter, ProgressMeter, Summary, dict_to_cuda
 
+# no test yet
 def validate(val_loader, model_engine, processor, epoch, global_step, writer, args):
     model_engine.eval()
 

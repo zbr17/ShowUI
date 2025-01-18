@@ -17,7 +17,6 @@ from utils.utils import save_json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -91,93 +90,51 @@ def validate_screenspot(val_loader, model_engine, processor, epoch, global_step,
     local_rank = int(os.environ.get('LOCAL_RANK', 0))
     world_size = int(os.environ.get('WORLD_SIZE', 1))
 
-    if args.num_zoom_in > 0:
-        from data.dataset import collate_fn
-        from data.dset_screenspot import ScreenSpotZoomIn
-        val_loader_zoomin = ScreenSpotZoomIn(base_image_dir=args.dataset_dir,
-                                            processor=processor, 
-                                            json_data=args.val_screenspot_data, 
-                                            inference=True)
-
     metric = 0
     for i, input_dict in enumerate(tqdm(val_loader)):
-        exist_zoom_in = 0
-        click_seq = []
-        ratio_seq = []
+        torch.cuda.empty_cache()
+        input_dict = dict_to_cuda(input_dict, device=f'cuda:{local_rank}')
 
-        while exist_zoom_in <= args.num_zoom_in:
-            torch.cuda.empty_cache()
-            if exist_zoom_in == 0:
-                input_dict = dict_to_cuda(input_dict, device=f'cuda:{local_rank}')
-            else:
-                # item = input_dict['meta_data']
-                tmp_dict = val_loader_zoomin.__getitem__(meta, click_seq, ratio_seq)
-                input_dict = collate_fn([tmp_dict], processor)
-                input_dict = dict_to_cuda(input_dict, device=f'cuda:{local_rank}')
+        if args.precision == "fp16":
+            input_dict["pixel_values"] = input_dict["pixel_values"].half()
+        elif args.precision == "bf16":
+            input_dict["pixel_values"] = input_dict["pixel_values"].bfloat16()
+        else:
+            input_dict["pixel_values"] = input_dict["pixel_values"].float()
 
-            if args.precision == "fp16":
-                input_dict["pixel_values"] = input_dict["pixel_values"].half()
-            elif args.precision == "bf16":
-                input_dict["pixel_values"] = input_dict["pixel_values"].bfloat16()
-            else:
-                input_dict["pixel_values"] = input_dict["pixel_values"].float()
+        with torch.no_grad():
+            forward_dict = dict(
+                pixel_values=input_dict["pixel_values"],
+                input_ids=input_dict["input_ids"],
+                labels=input_dict["labels"],
+                )
 
-            with torch.no_grad():
-                forward_dict = dict(
-                    pixel_values=input_dict["pixel_values"],
-                    input_ids=input_dict["input_ids"],
-                    labels=input_dict["labels"],
-                    )
-            if args.model_id in ['Qwen/Qwen2-VL-2B-Instruct', 'Qwen/Qwen2-VL-7B-Instruct', 'Qwen/Qwen2-VL-7B']:
-                forward_dict.update(image_grid_thw=input_dict["image_sizes"]) if "image_sizes" in input_dict else None
-                forward_dict.update(patch_assign=input_dict["patch_assign"]) if "patch_assign" in input_dict else None
-                forward_dict.update(patch_assign_len=input_dict["patch_assign_len"]) if "patch_assign_len" in input_dict else None
-                forward_dict.update(patch_pos=input_dict["patch_pos"]) if "patch_pos" in input_dict else None
-                forward_dict.update(select_mask=input_dict["select_mask"]) if "select_mask" in input_dict else None
-                    
-            elif args.model_id in ["microsoft/Phi-3-vision-128k-instruct", "microsoft/Phi-3.5-vision-instruct"]:
-                forward_dict.update(image_sizes=input_dict["image_sizes"])
+        forward_dict.update(image_grid_thw=input_dict["image_sizes"]) if "image_sizes" in input_dict else None
+        forward_dict.update(patch_assign=input_dict["patch_assign"]) if "patch_assign" in input_dict else None
+        forward_dict.update(patch_assign_len=input_dict["patch_assign_len"]) if "patch_assign_len" in input_dict else None
+        forward_dict.update(patch_pos=input_dict["patch_pos"]) if "patch_pos" in input_dict else None
+        forward_dict.update(select_mask=input_dict["select_mask"]) if "select_mask" in input_dict else None
+        
+        try:
+            generate_ids = model_engine.generate(**forward_dict, 
+                                    max_new_tokens=128, 
+                                    eos_token_id=processor.tokenizer.eos_token_id,
+                                    )
+            generate_ids = generate_ids[:, input_dict['input_ids'].shape[1]:]
+            generated_texts = processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=True)[0]
+            meta = input_dict['meta_data'][0]
 
-            try:
-                generate_ids = model_engine.generate(**forward_dict, 
-                                        max_new_tokens=128, 
-                                        eos_token_id=processor.tokenizer.eos_token_id,
-                                        # use_cache =False
-                                        )
+            print(f"generated_texts: {generated_texts}")
+            print(f"answer: {meta['bbox']}")
+            pred_point = ast.literal_eval(generated_texts)
 
-                generate_ids = generate_ids[:, input_dict['input_ids'].shape[1]:]
-                generated_texts = processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=True)[0]
-                meta = input_dict['meta_data'][0]
-
-                print(f"generated_texts: {generated_texts}")
-                print(f"answer: {meta['bbox']}")
-
-                pred_point = ast.literal_eval(generated_texts)
-            except:
-                break
-
-            click_seq.append(pred_point)
-
-            if exist_zoom_in == 0:
-                ratio_seq.append(meta['img_size'])
-            else:
-                ratio_seq.append(meta['crop_size'])
-
-            exist_zoom_in += 1
-
-        if args.num_zoom_in > 0 and exist_zoom_in > 0:
-            # transform the last click_xy to the original image
-            click_ref = val_loader_zoomin.get_ref_click(meta, click_seq, ratio_seq)
-            generated_texts = str(click_ref[-1])    # the last one;
-
-            meta['click_ref'] = click_ref
-            meta['click_seq'] = click_seq
-            meta['ratio_seq'] = ratio_seq
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
         outputs = {"split": meta['split'], 'data_type': meta['data_type'],
-                            "anno_id": meta['id'], "img_path": meta['img_url_abs'], "instruction": meta['task'], "sentence": generated_texts,
-                            "bbox": meta['bbox'], 
-                            "meta": meta}
+                    "anno_id": meta['id'], "img_path": meta['img_url_abs'], "instruction": meta['task'], "sentence": generated_texts,
+                    "bbox": meta['bbox'], 
+                    "meta": meta}
 
         generated_texts_unique.append(generated_texts)
         answers_unique.append(meta['bbox'])
@@ -259,7 +216,6 @@ def validate_screenspot(val_loader, model_engine, processor, epoch, global_step,
                         img_array = draw_point_bbox(img_url, None, gt_bbox)
                     images = wandb.Image(img_array, caption=f"{split}/{type}/{img_anno}_{img_inst}")
                     images_list.append(images)
-                    # wandb.log({"examples": images})
             wandb.log({"examples": images_list}, step=global_step)
  
         save_json(results, os.path.join(args.tmp_dir, f'screenspot_epo{epoch}_tmp_dict.json'))

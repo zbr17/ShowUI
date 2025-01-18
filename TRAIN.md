@@ -9,13 +9,13 @@ pip install -r requirements.txt --user
 ```
 
 ## 📦Setup Datasets
-Download grounding training dataset -- [ShowUI-desktop-8K](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
+Download grounding training dataset -- [ShowUI-desktop](https://huggingface.co/datasets/showlab/ShowUI-desktop-8K).
 Download grounding evaluation dataset -- [ScreenSpot](https://huggingface.co/datasets/KevinQHLin/ScreenSpot)
 
 You can use huggingface-cli to download these datasets easily.
 ```
 cd $_DATA_DIR
-huggingface-cli download showlab/ShowUI-desktop-8K --repo-type dataset --local-dir .
+huggingface-cli download showlab/ShowUI-desktop --repo-type dataset --local-dir .
 huggingface-cli download KevinQHLin/ScreenSpot --repo-type dataset --local-dir .
 ```
 

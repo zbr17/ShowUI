@@ -70,45 +70,28 @@ def train(
 
             forward_dict = dict(
                 pixel_values=input_dict["pixel_values"],
-                # image_sizes=input_dict["image_sizes"],
-                # attention_mask=input_dict["attention_mask"],
                 input_ids=input_dict["input_ids"],
                 labels=input_dict["labels"],
                 output_hidden_states=True
                 )
 
-            if args.model_id in ['Qwen/Qwen2-VL-2B-Instruct', 'Qwen/Qwen2-VL-7B-Instruct', 'Qwen/Qwen2-VL-7B']:
-                forward_dict.update(image_grid_thw=input_dict["image_sizes"]) if "image_sizes" in input_dict else None
-                forward_dict.update(patch_assign=input_dict["patch_assign"]) if "patch_assign" in input_dict else None
-                forward_dict.update(patch_assign_len=input_dict["patch_assign_len"]) if "patch_assign_len" in input_dict else None
-                forward_dict.update(patch_pos=input_dict["patch_pos"]) if "patch_pos" in input_dict else None
-                forward_dict.update(select_mask=input_dict["select_mask"]) if "select_mask" in input_dict else None
-
-            elif args.model_id in ["microsoft/Phi-3-vision-128k-instruct", "microsoft/Phi-3.5-vision-instruct"]:
-                forward_dict.update(image_sizes=input_dict["image_sizes"])
+            forward_dict.update(image_grid_thw=input_dict["image_sizes"]) if "image_sizes" in input_dict else None
+            forward_dict.update(patch_assign=input_dict["patch_assign"]) if "patch_assign" in input_dict else None
+            forward_dict.update(patch_assign_len=input_dict["patch_assign_len"]) if "patch_assign_len" in input_dict else None
+            forward_dict.update(patch_pos=input_dict["patch_pos"]) if "patch_pos" in input_dict else None
+            forward_dict.update(select_mask=input_dict["select_mask"]) if "select_mask" in input_dict else None
             
-            # t1 = time.time()
             output_dict = model.forward(
                 **forward_dict
             )
-            # t2 = time.time()
             loss = output_dict["loss"]
             losses.update(loss.item(), input_dict["input_ids"].size(0))
             model.backward(loss)
             model.step()
-            # t3 = time.time()
-            # print(f"Forward time: {t2-t1} s, Backward time: {t3-t2} s")
-
-
-        #     loss_accumulated = loss / args.grad_accumulation_steps
-        #     model.backward(loss_accumulated)
-        # model.step()
 
         # measure elapsed time
-        # iter_sec  = (time.time() - end) / args.grad_accumulation_steps
         batch_sec  = (time.time() - end)
         iter_sec = batch_sec / args.grad_accumulation_steps
-        # pdb.set_trace()
         batch_time.update(batch_sec)
         iter_time.update(iter_sec)
         epoch_time.update(iter_sec * args.steps_per_epoch / 3600)

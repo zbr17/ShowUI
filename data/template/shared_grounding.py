@@ -87,55 +87,7 @@ _USER_b = '{system}<|image_1|>{element}'
 _USER_c = '{system}{element}<|image_1|>'
 _USER_list = [_USER_a, _USER_b, _USER_c]
 
-def grounding_to_openai(element_name, answer_xy=None, sample_io=0, user_prompt_random=True, xy_int=False):
-    """
-    sample_io: {0: text2point, 1: text2bbox, 2: point2text, 3: bbox2text}
-    """
-    transformed_data = []
-    if sample_io in [0, 1]:
-        system_prompt = random.choice(_SYSTEM_text2pos)
-    elif sample_io in [2, 3]:
-        system_prompt = random.choice(_SYSTEM_pos2text)
-    else:
-        raise ValueError(f"Invalid input type: {sample_i}")
-    
-    if sample_io in [0, 2]:
-        if xy_int:
-            system_prompt += ' ' + _SYSTEM_point_int
-        else:
-            system_prompt += ' ' + _SYSTEM_point
-    elif sample_io in [1, 3]:
-        if xy_int:
-            system_prompt += ' ' + _SYSTEM_bbox_int
-        else:
-            system_prompt += ' ' + _SYSTEM_bbox
-    else:
-        raise ValueError(f"Invalid coordinate type: {sample_out}")
-
-    if user_prompt_random:
-        user_prompt = random.choice(_USER_list)
-    else:
-        user_prompt = _USER_a
-    question = user_prompt.format(system=system_prompt, element=element_name)
-    transformed_data.append(
-                {
-                    "role": "user",
-                    "content": question,
-                },
-            )
-
-    if answer_xy:
-        answer = f'{answer_xy}'
-        transformed_data.append(
-                    {
-                        "role": "assistant",
-                        "content": answer,
-                    },
-                )
-    return transformed_data
-
-
-def grounding_to_openai_qwen(element_name, image, sample_io=0, user_prompt_random=True, xy_int=False, uniform_prompt=False):
+def grounding_to_qwen(element_name, image, sample_io=0, user_prompt_random=True, xy_int=False, uniform_prompt=False):
     """
     sample_io: {0: text2point, 1: text2bbox, 2: point2text, 3: bbox2text}
     """
@@ -164,12 +116,6 @@ def grounding_to_openai_qwen(element_name, image, sample_io=0, user_prompt_rando
             system_prompt += ' ' + _SYSTEM_bbox
     else:
         raise ValueError(f"Invalid coordinate type: {sample_out}")
-
-    # if user_prompt_random:
-    #     user_prompt = random.choice(_USER_list)
-    # else:
-    #     user_prompt = _USER_a
-    # question = user_prompt.format(system=system_prompt, element=element_name)
 
     '{system}<|image_1|>{element}'
     if user_prompt_random:

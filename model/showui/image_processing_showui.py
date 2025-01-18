@@ -225,10 +225,10 @@ class ShowUIImageProcessor(BaseImageProcessor):
             new_arr[idx] = mapping[x]
         return new_arr
     
-    def _build_ui_graph(self, patches,
+    def _build_uigraph(self, patches,
                         grid_t, grid_h, grid_w,
                         grid_h_half, grid_w_half, 
-                        ui_graph_threshold,
+                        uigraph_threshold,
                         channel):
         num_patches = grid_t * grid_h_half * grid_w_half
         uf = UnionFind(num_patches)
@@ -248,7 +248,7 @@ class ShowUIImageProcessor(BaseImageProcessor):
                         right_patch = patches[t, i, j + 1, :, :, :, :,]
                         # Compute the difference between the patches
                         diff = np.linalg.norm(current_patch - right_patch)
-                        if diff < ui_graph_threshold:
+                        if diff < uigraph_threshold:
                             uf.union(current_idx, idx(t, i, j + 1))
 
                     # Compare with bottom neighbor
@@ -256,21 +256,21 @@ class ShowUIImageProcessor(BaseImageProcessor):
                         bottom_patch = patches[t, i + 1, j, :, :, :, :,]
                         # Compute the difference between the patches
                         diff = np.linalg.norm(current_patch - bottom_patch)
-                        if diff < ui_graph_threshold:
+                        if diff < uigraph_threshold:
                             uf.union(current_idx, idx(t, i + 1, j))
 
-        ui_graph_assign_flat = np.array([uf.find(x) for x in range(num_patches)])
+        uigraph_assign_flat = np.array([uf.find(x) for x in range(num_patches)])
         le = LabelEncoder()
-        ui_graph_assign_flat = le.fit_transform(ui_graph_assign_flat)
-        ui_graph_assign = ui_graph_assign_flat.reshape((grid_t, grid_h_half, grid_w_half))
-        return ui_graph_assign
+        uigraph_assign_flat = le.fit_transform(uigraph_assign_flat)
+        uigraph_assign = uigraph_assign_flat.reshape((grid_t, grid_h_half, grid_w_half))
+        return uigraph_assign
 
-    def _vis_ui_graph(self, ui_graph_assign, image_size, patch_size, image):
+    def _vis_uigraph(self, uigraph_assign, image_size, patch_size, image):
         resized_height, resized_width = image_size[0]
-        ui_graph_assign = ui_graph_assign[0]
+        uigraph_assign = uigraph_assign[0]
 
-        upscaled_ui_graph_assign = np.repeat(np.repeat(ui_graph_assign, patch_size, axis=0), patch_size, axis=1)
-        upscaled_ui_graph_assign = upscaled_ui_graph_assign[:resized_height, :resized_width]
+        upscaled_uigraph_assign = np.repeat(np.repeat(uigraph_assign, patch_size, axis=0), patch_size, axis=1)
+        upscaled_uigraph_assign = upscaled_uigraph_assign[:resized_height, :resized_width]
 
         if isinstance(image, PIL.Image.Image):
             image = np.array(image)
@@ -282,7 +282,7 @@ class ShowUIImageProcessor(BaseImageProcessor):
         else:
             raise ValueError("Unexpected image shape: {}".format(image.shape))
 
-        boundaries_image = mark_boundaries(image, upscaled_ui_graph_assign, color=(1, 0.4, 0.4))
+        boundaries_image = mark_boundaries(image, upscaled_uigraph_assign, color=(1, 0.4, 0.4))
         boundaries_image = (boundaries_image * 255).astype(np.uint8)
         return Image.fromarray(boundaries_image)
     
@@ -299,9 +299,9 @@ class ShowUIImageProcessor(BaseImageProcessor):
         do_convert_rgb: bool = None,
         data_format: Optional[ChannelDimension] = ChannelDimension.FIRST,
         input_data_format: Optional[Union[str, ChannelDimension]] = None,
-        ui_graph: bool = False,
-        ui_graph_threshold: float = 0.0,
-        ui_graph_rand: bool = False,
+        uigraph_use: bool = False,
+        uigraph_diff: float = 0.0,
+        uigraph_rand: bool = False,
     ):
         """
         Preprocess an image or batch of images. Copy of the `preprocess` method from `CLIPImageProcessor`.
@@ -337,12 +337,12 @@ class ShowUIImageProcessor(BaseImageProcessor):
                 - `"channels_first"` or `ChannelDimension.FIRST`: image in (num_channels, height, width) format.
                 - `"channels_last"` or `ChannelDimension.LAST`: image in (height, width, num_channels) format.
                 - `"none"` or `ChannelDimension.NONE`: image in (height, width) format.   - `"none"` or `ChannelDimension.NONE`: image in (height, width) format.
-            ui_graph (`bool`, *optional*, defaults to `False`):
+            uigraph_use (`bool`, *optional*, defaults to `False`):
                 Whether to build ui graph.
-            ui_graph_threshold (`float`, *optional*, defaults to `0.0`):
+            uigraph_diff (`float`, *optional*, defaults to `0.0`):
                 If build, this parameter sets the patch-wise difference threshold. 
                 A larger threshold results in sparser components, while a smaller threshold leads to denser components.
-            ui_graph_rand (`bool`, *optional*, defaults to `False`):
+            uigraph_rand (`bool`, *optional*, defaults to `False`):
                 If build, whether to build it randomly for ablation studies.
         """
         images = make_list_of_images(images)
@@ -403,7 +403,7 @@ class ShowUIImageProcessor(BaseImageProcessor):
         # default grid as init. ui graph
         grid_h_half = grid_h // self.merge_size
         grid_w_half = grid_w // self.merge_size
-        ui_graph_assign = np.arange(grid_t * grid_h_half * grid_w_half).reshape((grid_t, grid_h_half, grid_w_half))
+        uigraph_assign = np.arange(grid_t * grid_h_half * grid_w_half).reshape((grid_t, grid_h_half, grid_w_half))
 
         patches = patches.reshape(
             grid_t,
@@ -419,18 +419,18 @@ class ShowUIImageProcessor(BaseImageProcessor):
         patches = patches.transpose(0, 3, 6, 4, 7, 2, 1, 5, 8)
 
         # showui's ui graph construction
-        if ui_graph:
-            ui_graph_assign = self._build_ui_graph(patches=patches,
+        if uigraph_use:
+            uigraph_assign = self._build_uigraph(patches=patches,
                                                 grid_t=grid_t, grid_h=grid_h, grid_w=grid_w,
                                                 grid_h_half=grid_h_half, grid_w_half=grid_w_half, 
-                                                ui_graph_threshold=ui_graph_threshold,
+                                                uigraph_threshold=uigraph_diff,
                                                 channel=channel)
         
         flatten_patches = patches.reshape(
             grid_t * grid_h * grid_w, channel * self.temporal_patch_size * self.patch_size * self.patch_size
         )
 
-        return flatten_patches, (grid_t, grid_h, grid_w), ui_graph_assign, processed_resize
+        return flatten_patches, (grid_t, grid_h, grid_w), uigraph_assign, processed_resize
 
     def preprocess(
         self,
@@ -448,10 +448,10 @@ class ShowUIImageProcessor(BaseImageProcessor):
         return_tensors: Optional[Union[str, TensorType]] = None,
         data_format: Optional[ChannelDimension] = ChannelDimension.FIRST,
         input_data_format: Optional[Union[str, ChannelDimension]] = None,
-        ui_graph: bool = False,
-        ui_graph_threshold: float = 0.0,
-        ui_graph_rand: bool = False,
-        ui_graph_vis_dir: str = None,
+        uigraph_use: bool = False,
+        uigraph_diff: float = 0.0,
+        uigraph_rand: bool = False,
+        vis_dir: str = None,
     ):
         """
         Args:
@@ -500,14 +500,14 @@ class ShowUIImageProcessor(BaseImageProcessor):
                 - `"channels_first"` or `ChannelDimension.FIRST`: image in (num_channels, height, width) format.
                 - `"channels_last"` or `ChannelDimension.LAST`: image in (height, width, num_channels) format.
                 - `"none"` or `ChannelDimension.NONE`: image in (height, width) format.
-            ui_graph (`bool`, *optional*, defaults to `False`):
+            uigraph_use (`bool`, *optional*, defaults to `False`):
                 Whether to build ui graph.
-            ui_graph_threshold (`float`, *optional*, defaults to `0.0`):
+            uigraph_diff (`float`, *optional*, defaults to `0.0`):
                 If build, this parameter sets the patch-wise difference threshold. 
                 A larger threshold results in sparser components, while a smaller threshold leads to denser components.
-            ui_graph_rand (`bool`, *optional*, defaults to `False`):
+            uigraph_rand (`bool`, *optional*, defaults to `False`):
                 If build, whether to build it randomly for ablation studies.
-            ui_graph_vis_dir (`str`, *optional*, defaults to `None`):
+            vis_dir (`str`, *optional*, defaults to `None`):
                 If build, the path to store the image with ui graph visualization.
         """
         do_resize = do_resize if do_resize is not None else self.do_resize
@@ -549,7 +549,7 @@ class ShowUIImageProcessor(BaseImageProcessor):
             patch_assign_shared = []     # store the patch-wise assignment jointly with shared component idx
 
             for image in images:
-                patches, image_grid_thw, ui_graph_assign, image_resize = self._preprocess(
+                patches, image_grid_thw, uigraph_assign, image_resize = self._preprocess(
                     image,
                     do_resize=do_resize,
                     resample=resample,
@@ -561,39 +561,39 @@ class ShowUIImageProcessor(BaseImageProcessor):
                     data_format=data_format,
                     do_convert_rgb=do_convert_rgb,
                     input_data_format=input_data_format,
-                    ui_graph=ui_graph,
-                    ui_graph_threshold=ui_graph_threshold,
-                    ui_graph_rand=ui_graph_rand,
+                    uigraph_use=uigraph_use,
+                    uigraph_diff=uigraph_diff,
+                    uigraph_rand=uigraph_rand,
                 )
 
-                # if use ui_graph
-                if ui_graph:
-                    # if apply ui_graph_rand
-                    if ui_graph_rand:
-                        C = len(np.unique(ui_graph_assign))
-                        _, H, W = ui_graph_assign.shape
-                        ui_graph_assign = np.random.randint(0, C + 1, size=(1, H, W))
+                # if use uigraph
+                if uigraph_use:
+                    # if apply uigraph_rand
+                    if uigraph_rand:
+                        C = len(np.unique(uigraph_assign))
+                        _, H, W = uigraph_assign.shape
+                        uigraph_assign = np.random.randint(0, C + 1, size=(1, H, W))
 
                 # flat 2d graph to 1d
-                ui_graph_assign_1d = ui_graph_assign.flatten()
-                ui_graph_assign_1d = self.rerank_values(ui_graph_assign_1d)
-                ui_graph_assign_len = len(np.unique(ui_graph_assign_1d))
+                uigraph_assign_1d = uigraph_assign.flatten()
+                uigraph_assign_1d = self.rerank_values(uigraph_assign_1d)
+                uigraph_assign_len = len(np.unique(uigraph_assign_1d))
                 
-                patch_assign_sep.extend(ui_graph_assign_1d)
-                patch_assign_len.append(ui_graph_assign_len)
-                ui_graph_assign_1d += sum(patch_assign_len)    # shared component idx to distinguish different images
-                patch_assign_shared.extend(ui_graph_assign_1d)
+                uigraph_assign_1d += sum(patch_assign_len)    # shared component idx to distinguish different images
+                patch_assign_shared.extend(uigraph_assign_1d)
+                patch_assign_sep.extend(uigraph_assign_1d)
+                patch_assign_len.append(uigraph_assign_len)
                 
                 pixel_values.extend(patches)
                 vision_grid_thws.append(image_grid_thw)
 
-                if ui_graph_vis_dir is not None:
-                    image_vis = self._vis_ui_graph(ui_graph_assign, image_resize, self.patch_size*self.merge_size, image)
-                    # pre_num = np.prod(ui_graph_assign.shape).item()
-                    # post_num = len(np.unique(ui_graph_assign))
+                if vis_dir is not None:
+                    image_vis = self._vis_uigraph(uigraph_assign, image_resize, self.patch_size*self.merge_size, image)
+                    # pre_num = np.prod(uigraph_assign.shape).item()
+                    # post_num = len(np.unique(uigraph_assign))
                     # img_size = f'{image_resize[0][0]}x{image_resize[0][1]}'
-                    # image_vis.save(f'{ui_graph_vis_dir}/{img_size}_{pre_num}_{post_num}.png')
-                    image_vis.save(f'{ui_graph_vis_dir}/demo.png')
+                    # image_vis.save(f'{vis_dir}/{img_size}_{pre_num}_{post_num}.png')
+                    image_vis.save(f'{vis_dir}/demo.png')
                     
             pixel_values = np.array(pixel_values)
             vision_grid_thws = np.array(vision_grid_thws)
@@ -608,7 +608,7 @@ class ShowUIImageProcessor(BaseImageProcessor):
         if videos is not None:
             pixel_values, vision_grid_thws = [], []
             for images in videos:
-                # ui_graph not support video yet
+                # uigraph not support video yet
                 patches, video_grid_thw, _, _ = self._preprocess(
                     images,
                     do_resize=do_resize,
