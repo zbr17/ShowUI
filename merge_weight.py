@@ -66,9 +66,9 @@ def main(args):
                                                model_max_length=args.model_max_length)
 
     # use unk rather than eos token to prevent endless generation
-    processor.tokenizer.pad_token = processor.tokenizer.unk_token
-    processor.tokenizer.pad_token_id = processor.tokenizer.convert_tokens_to_ids(processor.tokenizer.pad_token)
-    processor.tokenizer.padding_side = 'right'
+    # processor.tokenizer.pad_token = processor.tokenizer.unk_token
+    # processor.tokenizer.pad_token_id = processor.tokenizer.convert_tokens_to_ids(processor.tokenizer.pad_token)
+    # processor.tokenizer.padding_side = 'right'
 
     torch_dtype = torch.float32
     if args.precision == "bf16":
