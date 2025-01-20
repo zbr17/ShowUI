@@ -5,6 +5,8 @@ import pdb
 import sys
 sys.path.append(".")
 from data.data_utils import IGNORE_INDEX
+from data.dset_aitw import AitwDataset
+from data.dset_mind2web import Mind2WebDataset
 from data.dset_screenspot import ScreenSpotDataset
 from data.dset_shared_grounding import GroundingDataset
 
@@ -101,6 +103,28 @@ class HybridDataset(torch.utils.data.Dataset):
             if dataset in ["showui"]:
                 self.all_datasets.append(
                     GroundingDataset(
+                        dataset_dir=args.dataset_dir,
+                        dataset=dataset,
+                        json_data=json_split,
+                        processor=processor,
+                        inference=False,
+                        args_dict=vars(args),
+                        )
+                )
+            elif dataset in ["mind2web"]:
+                self.all_datasets.append(
+                    Mind2WebDataset(
+                        dataset_dir=args.dataset_dir,
+                        dataset=dataset,
+                        json_data=json_split,
+                        processor=processor,
+                        inference=False,
+                        args_dict=vars(args),
+                        )
+                )
+            elif dataset in ["aitw"]:
+                self.all_datasets.append(
+                    AitwDataset(
                         dataset_dir=args.dataset_dir,
                         dataset=dataset,
                         json_data=json_split,

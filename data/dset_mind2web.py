@@ -239,14 +239,10 @@ class Mind2WebDataset(torch.utils.data.Dataset):
                 labels=data_dict_q["input_ids"][0],
             )
 
-            if 'patch_assign' in data_dict_q:
-                data_dict['patch_assign'] = data_dict_q['patch_assign']
-            if 'patch_assign_len' in data_dict_q:
-                data_dict['patch_assign_len'] = data_dict_q['patch_assign_len']
-            if 'patch_pos' in data_dict_q:
-                data_dict['patch_pos'] = data_dict_q['patch_pos']
-            if 'select_mask' in data_dict_q:
-                data_dict['select_mask'] = data_dict_q['select_mask']
+            # Prepare elements for ShowUI
+            for key in ['select_mask', 'patch_pos', 'patch_assign', 'patch_assign_len']:
+                if key in data_dict_q:
+                    data_dict[key] = data_dict_q[key]
 
             return (
                 data_dict,

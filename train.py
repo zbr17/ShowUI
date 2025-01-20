@@ -20,10 +20,10 @@ from torch.utils.tensorboard import SummaryWriter
 
 from transformers import AutoProcessor, BitsAndBytesConfig      # do not remove this line
 from main.trainer import train
-from main.evaluator import validate as validate_default
 from main.eval_aitw import validate_aitw
 from main.eval_mind2web import validate_mind2web
 from main.eval_screenspot import validate_screenspot
+from main.evaluator import validate as validate_default
 
 from model.utils import find_target_linear_names
 from data.dataset import HybridDataset, collate_fn
@@ -427,67 +427,6 @@ def main(args):
         inference=True,
         args=args
     )
-
-    # train_dataset = HybridDataset(
-    #     args.dataset_dir,
-    #     processor,
-    #     samples_per_epoch=args.batch_size
-    #     * args.grad_accumulation_steps
-    #     * args.steps_per_epoch
-    #     * args.world_size,
-    #     precision=args.precision,
-    #     dataset=args.dataset,
-    #     sample_rate=[float(x) for x in args.sample_rates.split(",")],
-    #     showui_data=args.showui_data,
-    #     amex_data=args.amex_data,
-    #     aitw_data=args.aitw_data,
-    #     mind2web_data=args.mind2web_data,
-    #     miniwob_data=args.miniwob_data,
-    #     ricosca_data=args.ricosca_data,
-    #     widget_data=args.widget_data,
-    #     screencap_data=args.screencap_data,
-    #     guiact_data=args.guiact_data,
-    #     inference=False,
-    #     num_turn=args.num_turn,
-    #     text2point=args.text2point,
-    #     text2bbox=args.text2bbox,
-    #     point2text=args.point2text,
-    #     bbox2text=args.bbox2text,
-    #     shuffle_image_token=args.shuffle_image_token,
-    #     crop_min=args.crop_min,
-    #     crop_max=args.crop_max,
-    #     num_history=args.num_history,
-    #     interleaved_history=args.interleaved_history,
-    #     uniform_sample=args.uniform_sample,
-    #     random_sample=args.random_sample,
-    #     record_sample=args.record_sample,
-    #     xy_int=args.xy_int,
-    #     uniform_prompt=args.uniform_prompt,
-    #     skip_readme_train=args.skip_readme_train,
-    #     skip_readme_test=args.skip_readme_test,
-    # )
-
-    # val_dataset = HybridDataset(
-    #     args.dataset_dir,
-    #     processor,
-    #     samples_per_epoch=args.batch_size
-    #     * args.grad_accumulation_steps
-    #     * args.steps_per_epoch
-    #     * args.world_size,
-    #     precision=args.precision,
-    #     dataset=args.val_dataset,
-    #     sample_rate=[float(x) for x in args.val_sample_rates.split(",")],
-    #     aitw_data=args.val_aitw_data,
-    #     mind2web_data=args.val_mind2web_data,
-    #     screenspot_data=args.val_screenspot_data,
-    #     inference=True,
-    #     num_history=args.num_history,
-    #     interleaved_history=args.interleaved_history,
-    #     xy_int=args.xy_int,
-    #     uniform_prompt=args.uniform_prompt,
-    #     skip_readme_train=args.skip_readme_train,
-    #     skip_readme_test=args.skip_readme_test,
-    # )
 
     if args.val_dataset == "mind2web":
         validate = validate_mind2web
