@@ -33,7 +33,6 @@ def get_answer(sample, step, step_repr):
     else:
         element = step['operation']['value']
     bbox = step['bbox']
-    # tdl: should i consider randomly selecting a point in the bbox?
     point_x = bbox["x"] + (bbox["width"] / 2)
     point_y = bbox["y"] + (bbox["height"] / 2)
     click_point = [point_x / image_size[0], point_y / image_size[1]]

@@ -9,6 +9,7 @@ Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer U
         &nbsp&nbsp 📑 <a href="https://arxiv.org/abs/2411.17465">Paper</a> &nbsp&nbsp 
         | 🤗 <a href="https://huggingface.co/showlab/ShowUI-2B">Hugging Models</a>&nbsp&nbsp 
         | &nbsp&nbsp 🤗 <a href="https://huggingface.co/spaces/showlab/ShowUI">Spaces Demo</a> &nbsp&nbsp 
+        | &nbsp&nbsp 📝 <a href="./assets/slide.pdf">Slides</a> &nbsp&nbsp 
         | &nbsp&nbsp 🕹️ <a href="https://openbayes.com/console/public/tutorials/I8euxlahBAm">OpenBayes贝式计算 Demo</a> 
 <br>
 🤗 <a href="https://huggingface.co/datasets/showlab/ShowUI-desktop-8K">Datasets</a>&nbsp&nbsp | &nbsp&nbsp💬 <a href="https://x.com/_akhaliq/status/1864387028856537400">X (Twitter)</a>&nbsp&nbsp
