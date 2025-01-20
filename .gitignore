@@ -1,4 +1,4 @@
-.*
+.gitignore
 
 # Useless
 .ipynb_checkpoints/
