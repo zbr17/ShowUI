@@ -200,7 +200,6 @@ def validate_screenspot(val_loader, model_engine, processor, epoch, global_step,
         wandb.log({"metrics/screenspot/Avg Success Rate": metric}, step=global_step)
 
         if media:
-            # plot some examples
             images_list = []
             for split in results.keys():
                 for type in results[split].keys():
