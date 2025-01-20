@@ -136,7 +136,6 @@ class AitwDataset(torch.utils.data.Dataset):
     def get_history_qwen(self, image_list, sample, num_history, interleaved_history='tttt', decay_factor=1):
         # last one is the current image, past are the history
         curr_image = image_list[-1]
-        # curr_dict = [{'type': 'image', 'image': curr_image}]
         curr_dict = [{'type': 'image', 'image': curr_image, 'min_pixels': self.min_pixels, 'max_pixels': self.max_pixels}]
         if num_history == 0 or sample['step_history'] == []:
             assert len(image_list) == 1
@@ -147,9 +146,7 @@ class AitwDataset(torch.utils.data.Dataset):
         action_prefix = []
         for i, step in enumerate(step_history[-num_history:]):
             action = get_answer(step)
-            max_pixels = max(self.min_pixels, self.max_pixels * decay_factor ** (num_history - i))
-            # print(max_pixels, self.min_pixels, self.max_pixels, decay_factor, num_history, i)
-            # pdb.set_trace()
+            max_pixels = max(self.min_pixels, self.max_pixels * decay_factor ** (num_history - i))=
             if interleaved_history == 'vvtt':
                 action_prefix.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
             elif interleaved_history == 'ttvv':
@@ -165,10 +162,6 @@ class AitwDataset(torch.utils.data.Dataset):
             elif interleaved_history == 'tvtv':
                 action_history.append({"type": "text", "text": f'{action}'})
                 action_history.append({"type": "image", "image": image_list[i], "min_pixels": self.min_pixels, "max_pixels": max_pixels})
-            # action_history.append(f'Step{i}: {action}')
-        # tmp_prev = '; '.join(action_prefix)
-        # tmp_post = '; '.join(action_history)
-        # tmp = tmp_prev + '; ' + tmp_post if tmp_prev != '' else tmp_post
         tmp = action_prefix + action_history + curr_dict
         return tmp
 

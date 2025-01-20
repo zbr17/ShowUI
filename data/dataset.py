@@ -6,9 +6,11 @@ import sys
 sys.path.append(".")
 from data.data_utils import IGNORE_INDEX
 from data.dset_aitw import AitwDataset
+from data.dset_miniwob import MiniWobDataset
 from data.dset_mind2web import Mind2WebDataset
 from data.dset_screenspot import ScreenSpotDataset
 from data.dset_shared_grounding import GroundingDataset
+from data.dset_shared_navigation import NavigationDataset
 
 from transformers import AutoProcessor
 
@@ -130,6 +132,29 @@ class HybridDataset(torch.utils.data.Dataset):
                         json_data=json_split,
                         processor=processor,
                         inference=False,
+                        args_dict=vars(args),
+                        )
+                )
+            elif dataset in ["miniwob"]:
+                self.all_datasets.append(
+                    MiniWobDataset(
+                        dataset_dir=args.dataset_dir,
+                        dataset=dataset,
+                        json_data=json_split,
+                        processor=processor,
+                        inference=False,
+                        args_dict=vars(args),
+                        )
+                )
+            # Navigation mode
+            elif dataset in ["guiact"]:
+                self.all_datasets.append(
+                    NavigationDataset(
+                        dataset_dir=args.dataset_dir,
+                        dataset=dataset,
+                        json_data=json_split,
+                        processor=processor,
+                        inference=True,
                         args_dict=vars(args),
                         )
                 )

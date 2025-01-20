@@ -53,19 +53,6 @@ def get_bbox(meta):
     bbox = [round(item, 3) for item in bbox]
     return bbox
 
-# def pred2json(prediction):
-#     prediction = prediction.replace('\"', '\'')
-#     pattern = r"'action':\s*'(.*?)',\s*'value':\s*'(.*?)',\s*'position':\s*\[([0-9.]+),\s*([0-9.]+)\]\}"
-#     match = re.search(pattern, prediction)
-#     if match:
-#         return {
-#             "action": match.group(1),
-#             "value": match.group(2),
-#             "position": [float(match.group(3)), float(match.group(4))]
-#         }
-#     else:
-#         raise ValueError(f"Input string {prediction} doesn't match the expected format")
-
 def calculate_mind2web_metrics(results):
     num_step = 0
     num_episode = 0
