@@ -21,8 +21,8 @@ from torch.utils.tensorboard import SummaryWriter
 from transformers import AutoProcessor, BitsAndBytesConfig      # do not remove this line
 from main.trainer import train
 from main.evaluator import validate as validate_default
-# from main.eval_mind2web import validate_mind2web
-# from main.eval_aitw import validate_aitw
+from main.eval_aitw import validate_aitw
+from main.eval_mind2web import validate_mind2web
 from main.eval_screenspot import validate_screenspot
 
 from model.utils import find_target_linear_names

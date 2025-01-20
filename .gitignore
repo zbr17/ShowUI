@@ -1,14 +1,17 @@
-.ipynb_checkpoints/
+.gitignore
 
+# Useless
+.ipynb_checkpoints/
 __pycache__/
 *.py[cod]
-
 venv/
 .env/
 
-.gitignore
-
 ## Uncleaned sections
+# Mind2Web
+
+# AITW
+
 # MiniWob
 synapse/
 test_miniwob.py
