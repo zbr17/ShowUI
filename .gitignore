@@ -1,10 +1,17 @@
-# 忽略 Jupyter Notebook 的检查点
 .ipynb_checkpoints/
 
-# 忽略 Python 的缓存文件
 __pycache__/
 *.py[cod]
 
-# 忽略虚拟环境文件夹（如果存在）
 venv/
 .env/
+
+.gitignore
+
+## Uncleaned sections
+# MiniWob
+synapse/
+test_miniwob.py
+
+# Personal
+push.sh
