@@ -1,4 +1,5 @@
 import ast
+import pdb
 from PIL import Image, ImageDraw
 from gradio_client import Client, handle_file
 
@@ -44,5 +45,6 @@ if __name__ == "__main__":
     showuiprovider = ShowUIProvider()
     img_url = "examples/chrome.png"
     query = "search box"
+    pdb.set_trace()
     result = showuiprovider.call(query, img_url)
     print(result)
