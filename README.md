@@ -1,5 +1,7 @@
 # ShowUI
-Open-source, End-to-end, Vision-Language-Action model for GUI Agent & Computer Use.
+Open-source, End-to-end, Lightweight, Vision-Language-Action model for GUI Agent & Computer Use.
+
+ShowUI 是一款开源的、端到端、轻量级的视觉-语言-动作模型，专为 GUI 智能体设计。
 
 <p align="center">
 <img src="assets/showui.jpg" alt="ShowUI" width="480">
