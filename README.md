@@ -62,6 +62,7 @@ Our Training codebases supports:
 - [x] Interleaved data streaming
 - [x] Image randomly resize (crop, pad)
 - [x] Wandb training monitor
+- [x] Multi-GPUs, Multi-nodes training 
 
 See [Train](TRAIN.md) for training set up.
 
