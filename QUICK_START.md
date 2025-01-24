@@ -30,7 +30,7 @@ model = Qwen2VLForConditionalGeneration.from_pretrained(
 min_pixels = 256*28*28
 max_pixels = 1344*28*28
 
-processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct", min_pixels=min_pixels, max_pixels=max_pixels)
+processor = AutoProcessor.from_pretrained("showlab/ShowUI-2B", min_pixels=min_pixels, max_pixels=max_pixels)
 ```
 
 ❗ Enable **Int8 quantization** for efficiency.
