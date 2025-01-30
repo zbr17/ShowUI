@@ -145,7 +145,7 @@ action_map = {
 ```python
 img_url = 'examples/chrome.png'
 split='web'
-system_prompt = _NAV_SYSTEM.format(_APP=split, _ACTION_SPACE=action_map[split])
+system_prompt = _NAV_SYSTEM.format(_APP=split, _ACTION_SPACE=action_map[split]) + _NAV_FORMAT
 query = "Search the weather for the New York city."
 
 messages = [
