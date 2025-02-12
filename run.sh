@@ -3,7 +3,7 @@ _DATA_DIR=
 _SAVE_DIR=
 
 # Fine-tune ShowUI
-deepspeed --include localhost:1 --master_port 5678 train.py \
+deepspeed --include localhost:1 --master_port 1224 train.py \
   --wandb_key=$WANDB_KEY \
   --model_id='showlab/ShowUI-2B' \
   --version='showlab/ShowUI-2B' \
