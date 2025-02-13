@@ -27,7 +27,7 @@ ShowUI 是一款开源的、端到端、轻量级的视觉-语言-动作模型�
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
-- [x] [2025.2.13] Support vllm inference.
+- [x] [2025.2.13] Support **vllm** inference.
 - [x] [2025.1.20] Support Navigation tasks: Mind2Web, AITW, Miniwob training and evaluator.
 - [x] [2025.1.17] Support **API Calling** via Gradio Client, simply run `python3 api.py`.
 - [x] [2025.1.5] Release the [`ShowUI-web`](https://huggingface.co/datasets/showlab/ShowUI-web) dataset.
