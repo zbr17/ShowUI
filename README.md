@@ -27,6 +27,7 @@ ShowUI 是一款开源的、端到端、轻量级的视觉-语言-动作模型�
 > <br>Show Lab @ National University of Singapore, Microsoft<br>
 
 ## 🔥 Update
+- [x] [2025.2.13] Support vllm inference.
 - [x] [2025.1.20] Support Navigation tasks: Mind2Web, AITW, Miniwob training and evaluator.
 - [x] [2025.1.17] Support **API Calling** via Gradio Client, simply run `python3 api.py`.
 - [x] [2025.1.5] Release the [`ShowUI-web`](https://huggingface.co/datasets/showlab/ShowUI-web) dataset.
@@ -39,6 +40,11 @@ ShowUI 是一款开源的、端到端、轻量级的视觉-语言-动作模型�
 - [x] [2024.12.1] We support iterative refinement to improve grounding accuracy. Try it at [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI).
 - [x] [2024.11.27] We release the [arXiv paper](https://arxiv.org/abs/2411.17465), [HF Spaces demo](https://huggingface.co/spaces/showlab/ShowUI) and [`ShowUI-desktop`](https://huggingface.co/datasets/showlab/ShowUI-desktop).
 - [x] [2024.11.16] [`showlab/ShowUI-2B`](https://huggingface.co/showlab/ShowUI-2B) is available at huggingface.
+
+
+## 🤖 vllm Inference
+See [inference_vllm.ipynb](inference_vllm.ipynb) for vllm inference.
+> To leverage multiple GPUs for faster inference, you can adjust the gpu_num parameter
 
 ## ⚡ API Calling
 Run `python3 api.py` by providing a screenshot and a query.
