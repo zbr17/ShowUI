@@ -21,3 +21,4 @@ scikit-learn
 nltk
 wandb
 openai
+vllm
