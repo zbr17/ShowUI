@@ -18,3 +18,9 @@ test_miniwob.py
 
 # Personal
 push.sh
+
+# checkpoints
+showui-2b/
+
+# app cache
+app_out/

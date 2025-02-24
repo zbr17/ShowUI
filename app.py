@@ -57,15 +57,17 @@ def draw_point(image_input, point=None, radius=5):
         ImageDraw.Draw(image).ellipse((x - radius, y - radius, x + radius, y + radius), fill='red')
     return image
 
-def array_to_image_path(image_array):
+def array_to_image_path(image_array, output_path="./app_out"):
     """Save the uploaded image and return its path."""
     if image_array is None:
         raise ValueError("No image provided. Please upload an image before submitting.")
     img = Image.fromarray(np.uint8(image_array))
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"image_{timestamp}.png"
-    img.save(filename)
-    return os.path.abspath(filename)
+    os.makedirs(output_path, exist_ok=True)
+    file_path = os.path.join(output_path, filename)
+    img.save(file_path)
+    return os.path.abspath(file_path)
 
 @spaces.GPU
 def run_showui(image, query):
@@ -286,7 +288,7 @@ if __name__ == "__main__":
     demo = build_demo(embed_mode=False)
     demo.queue(api_open=False).launch(
         server_name="0.0.0.0",
-        server_port=7860,
+        server_port=12345,
         ssr_mode=False,
         debug=True,
     )
